@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F1F2F0">
+  <meta name="description" content="BUY & CELL. Mobile phones, moving from Dubai to your market. Follow the journey from warehouse to road, sea and air.">
+  <title>BUY & CELL — From Dubai. To your world.</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='2' width='19' height='28' rx='4' fill='%232B2E33'/%3E%3Cpath d='M10 7h9M12 25h5' stroke='%23F1F2F0' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+    @font-face{font-family:Archivo;src:url('./assets/fonts/Archivo.ttf') format('truetype');font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+    :root{--chalk:#F1F2F0;--asphalt:#2B2E33;--gulf:#0A5C99;--signal:#FF5B1F;--haze:#D5DDE2;--graphite:#4A5058;--ink:var(--asphalt);--paper:var(--chalk);--line:rgba(43,46,51,.2)}
+    *{box-sizing:border-box}html{scroll-behavior:auto;scrollbar-width:thin;scrollbar-color:#aab0b4 var(--chalk)}body{margin:0;background:var(--chalk);font-family:Archivo,Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}button,input,select,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit;text-decoration:none}button{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid currentColor;outline-offset:5px}button:disabled{cursor:default}::selection{background:var(--haze);color:var(--asphalt)}[hidden]{display:none!important}
+    .skip{position:fixed;left:20px;top:-70px;z-index:40;padding:14px;background:var(--chalk);color:var(--asphalt)}.skip:focus{top:10px}
+    #journey{height:500vh;height:500svh;position:relative}.stage{height:100vh;height:100svh;position:sticky;top:0;overflow:hidden;isolation:isolate}.scene-backdrop{position:fixed;inset:0;z-index:-3;background:var(--paper)}#scene{width:100%;height:100%;display:block}.copy-scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--paper) 0%,var(--paper) 30%,transparent 56%);z-index:-1}.poster{position:absolute;width:60%;height:75%;right:0;top:15%;object-fit:contain;display:block}.scene-ready .poster{display:none}.fallback-note{position:absolute;right:4.3%;top:104px;font-size:11px;opacity:.6;display:none}.webgl-failed .fallback-note{display:block}
+    .topbar{position:absolute;top:0;left:0;width:100%;height:100px;padding:0 4.3%;display:flex;align-items:center;justify-content:space-between;gap:28px;z-index:5}.brand{display:flex;gap:10px;align-items:center;flex-shrink:0}.brand svg{width:29px;height:35px}.brand-word{font-size:22px;letter-spacing:-1.1px;font-weight:820;font-stretch:112%}.brand-word span{font-weight:400}.topnav{display:flex;gap:34px;margin-left:auto;margin-right:4.8%;font-size:12px}.topnav a{position:relative;padding:12px 0}.topnav a:after{content:'';position:absolute;left:0;right:100%;bottom:5px;height:1px;background:currentColor;transition:right .25s}.topnav a:hover:after{right:0}.enquire{background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:15px 21px;font-size:12px;display:flex;gap:28px;align-items:center}.arrow{font-size:19px;line-height:.8;font-weight:400}.top-rule{position:absolute;top:99px;left:4.3%;right:4.3%;height:1px;background:var(--line)}
+    .copy{position:absolute;left:6.4%;top:49.5%;transform:translateY(-50%);width:38%;max-width:570px;z-index:3}.eyebrow{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.12em;margin:0 0 26px}.eyebrow:before{content:'';width:25px;height:1px;background:currentColor}.chapter-number{font-variant-numeric:tabular-nums;opacity:.5}.copy h1{font-size:clamp(48px,5.35vw,89px);font-weight:610;font-stretch:118%;line-height:1.015;letter-spacing:-.067em;margin:0 0 28px;max-width:100%}.copy h1 .soft{font-weight:360}.copy .description{font-size:13px;line-height:1.85;max-width:310px;margin:0 0 27px;opacity:.76}.copy-action{display:inline-flex;align-items:center;gap:32px;border:1px solid var(--line);border-radius:99px;padding:13px 18px;font-size:11px;background:transparent}.copy-action:hover{background:var(--ink);color:var(--paper)}.copy-action .arrow{font-size:16px}.copy-meta{margin-top:39px;font-size:9px;letter-spacing:.06em;display:flex;gap:15px;align-items:center;opacity:.55}.copy-meta span+span{border-left:1px solid currentColor;padding-left:15px}
+    .scene-label{position:absolute;top:20.5%;right:5%;font-size:10px;letter-spacing:.04em;display:flex;align-items:center;gap:12px}.scene-label:before{content:'+';font-size:19px;font-weight:300}.scene-label strong{font-weight:500}.scene-label span{opacity:.5}.scene-index{position:absolute;right:5%;top:25%;font-size:clamp(80px,10vw,170px);font-weight:300;line-height:1;letter-spacing:-.09em;opacity:.055;pointer-events:none}.subject-note{position:absolute;right:6.3%;bottom:22%;display:flex;align-items:center;gap:9px;font-size:9px;letter-spacing:.02em;opacity:.65}.subject-note:before{content:'';width:25px;height:1px;background:currentColor}
+    .cutouts{position:absolute;left:45%;right:0;top:110px;bottom:20%;overflow:hidden;pointer-events:none;z-index:1;contain:paint}.cutout{position:absolute;right:8%;top:10%;width:19%;min-width:75px;max-width:150px;margin:0;opacity:0;transform-origin:center;will-change:transform,opacity,filter}.cutout img{width:100%;height:auto;display:block;filter:drop-shadow(7px 16px 12px rgba(43,46,51,.08))}.cutout figcaption{font-size:8px;letter-spacing:.04em;opacity:.6;white-space:nowrap;text-align:center;margin-top:9px}.cutout:nth-child(2){right:8%;top:12%}.cutout:nth-child(3){right:5%;top:10%}.cutout:nth-child(4),.cutout:nth-child(5){right:8%;top:12%;width:13%;max-width:100px}
+    .journey-footer{position:absolute;bottom:29px;left:4.3%;right:4.3%;z-index:4}.footer-top{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.06em;margin-bottom:23px}.route-label{display:flex;gap:15px;align-items:center}.route-label svg{width:49px;height:8px}.scroll-hint{display:flex;align-items:center;gap:9px;opacity:.6}.scroll-hint .mouse{height:15px;width:10px;border:1px solid currentColor;border-radius:8px;position:relative}.mouse:after{content:'';position:absolute;top:3px;left:3px;width:2px;height:3px;background:currentColor}.rail{position:relative;height:1px;background:var(--line)}.rail-fill{position:absolute;inset:0;right:auto;width:0;background:var(--signal)}.rail-fill:after{content:'';position:absolute;right:-3px;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--signal)}.chapters{display:grid;grid-template-columns:repeat(5,1fr);margin-top:19px}.chapter{border:0;background:transparent;text-align:left;display:flex;align-items:center;gap:11px;padding:0;opacity:.44;font-size:10px;transition:opacity .2s}.chapter:last-child{justify-self:end}.chapter:nth-child(2),.chapter:nth-child(3),.chapter:nth-child(4){justify-self:center}.chapter[aria-current=step],.chapter:hover{opacity:1}.chapter .num{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums}.chapter .label{font-weight:450}.chapter .mini-arrow{margin-left:5px;font-size:14px;opacity:0}.chapter[aria-current=step] .mini-arrow{opacity:1}
+    .debug{position:fixed;bottom:105px;left:50%;transform:translateX(-50%);z-index:20;background:var(--asphalt);color:var(--chalk);padding:12px 16px;border-radius:8px;display:flex;gap:12px;align-items:center;font-size:11px;box-shadow:0 4px 20px #0002;max-width:calc(100% - 24px)}.debug input{width:200px;accent-color:var(--signal)}.debug output{min-width:50px;font-variant-numeric:tabular-nums}.debug button{border:1px solid #ffffff40;border-radius:4px;background:none;font-size:10px;padding:5px 8px}.debug .fps{white-space:nowrap}
+    dialog{border:0;padding:38px;max-width:520px;width:calc(100% - 36px);max-height:90svh;overflow:auto;background:var(--chalk);color:var(--asphalt);box-shadow:0 15px 100px #0003}dialog::backdrop{background:#18263580;backdrop-filter:blur(6px)}.dialog-close{position:absolute;right:17px;top:13px;background:none;border:0;font-size:26px;font-weight:300}.dialog-kicker{font-size:10px;letter-spacing:.1em;opacity:.6;margin:0 0 20px}dialog h2{font-size:36px;font-weight:540;letter-spacing:-.055em;line-height:1.1;margin:0 0 15px}dialog p{font-size:12px;line-height:1.7;opacity:.72}form{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}label{display:grid;gap:8px;font-size:11px}label.full,.form-submit,.form-note{grid-column:1/-1}form input,form textarea{width:100%;border:0;border-bottom:1px solid #2b2e3340;padding:8px 0 12px;background:none;border-radius:0;font-size:13px;color:inherit}form textarea{min-height:70px;resize:vertical}form .enquire{margin-top:7px;justify-content:space-between}.form-note{font-size:10px;margin:0}.form-success{padding-top:20px}.form-success a,.form-success button{display:inline-flex;border:1px solid #2b2e3340;border-radius:99px;padding:13px 18px;background:none;font-size:12px;margin:12px 10px 0 0}.form-success pre{white-space:pre-wrap;font:12px/1.8 Archivo,Arial,sans-serif;border-top:1px solid #2b2e3320;padding-top:20px}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(min-width:1600px){.copy{left:8%}.copy .description{font-size:15px;max-width:350px}.topbar{height:114px}.top-rule{top:113px}.journey-footer{bottom:40px}}
+    @media(max-width:899px){.topbar{height:77px;padding:0 6%;gap:15px}.top-rule{top:76px;left:6%;right:6%}.brand-word{font-size:19px}.brand svg{width:24px;height:29px}.topnav{display:none}.enquire{font-size:10px;padding:12px 15px;gap:16px}.topbar .enquire .desktop-word{display:none}.copy{left:7%;width:86%;top:58%;transform:none;max-width:600px}.eyebrow{font-size:8px;margin-bottom:14px;gap:8px}.eyebrow:before{width:16px}.copy h1{font-size:clamp(35px,8.4vw,58px);line-height:1.02;letter-spacing:-.06em;margin-bottom:14px}.copy h1 br{display:none}.copy h1 br:after{content:' '}.copy .description{font-size:11px;line-height:1.7;max-width:300px;margin-bottom:16px}.copy-action{font-size:10px;padding:10px 15px;gap:22px}.copy-meta{display:none}.copy-scrim{background:linear-gradient(0deg,var(--paper) 0%,var(--paper) 39%,transparent 57%)}.scene-label{top:13%;left:7%;right:auto;font-size:8px}.scene-label:before{font-size:15px}.scene-index{top:15%;right:7%;font-size:90px}.subject-note{right:7%;bottom:auto;top:50.5%;font-size:8px}.cutouts{left:4%;right:4%;top:17%;bottom:47%}.cutout{width:16%;min-width:50px;max-width:80px;right:1%;top:8%}.cutout figcaption{font-size:6px;white-space:normal}.cutout:nth-child(n){right:1%;top:8%;width:15%}.journey-footer{left:7%;right:7%;bottom:max(30px,env(safe-area-inset-bottom))}.footer-top{display:none}.chapters{margin-top:14px}.chapter{display:grid;gap:5px;font-size:8px}.chapter .num{font-size:12px}.chapter .mini-arrow{display:none}.chapter:nth-child(n){justify-self:center}.chapter:first-child{justify-self:start}.chapter:last-child{justify-self:end}.debug{bottom:105px;font-size:10px;padding:9px;gap:7px}.debug input{width:105px}.debug label{display:none}.poster{width:100%;height:48%;top:11%}.fallback-note{top:82px;right:6%;font-size:8px}dialog{padding:30px}dialog h2{font-size:31px}}
+    @media(max-width:899px) and (max-height:730px){.copy{top:55%}.copy h1{font-size:33px}.eyebrow{margin-bottom:10px}.copy .description{font-size:10px;line-height:1.6;margin-bottom:12px}.copy-action{padding:9px 13px}.journey-footer{bottom:22px}.subject-note{top:48%}.chapters{margin-top:11px}}
+    @media(min-width:900px) and (max-height:680px){.copy{top:48%}.copy h1{font-size:54px;margin-bottom:18px}.eyebrow{margin-bottom:18px}.copy-meta{margin-top:23px}.topbar{height:76px}.top-rule{top:75px}.journey-footer{bottom:22px}.footer-top{margin-bottom:16px}.scene-label{top:18%}}
+    .copy-scrim{background:linear-gradient(90deg,var(--paper) 0%,var(--paper) 42%,transparent 59%)}
+    .topbar{background:var(--paper)}
+    .enquire{background:var(--asphalt);color:var(--chalk)}
+    .cutout:nth-child(n){top:58%;right:5%;width:14%;max-width:90px;min-width:60px}
+    @media(max-width:899px){.copy{top:55%}.copy-scrim{background:linear-gradient(0deg,var(--paper) 0%,var(--paper) 45%,transparent 57%)}.journey-footer{bottom:max(85px,calc(env(safe-area-inset-bottom) + 65px))}.cutout:nth-child(n){top:54%;right:3%;width:15%;max-width:65px;min-width:45px}.debug{bottom:29px}.topbar .enquire{font-size:0}.topbar .enquire:before{content:'Enquire';font-size:10px}.topbar .enquire .arrow{font-size:17px}}
+    @media(max-width:899px) and (max-height:730px){.copy{top:51%}.copy h1{font-size:30px}.copy .description{line-height:1.5}.journey-footer{bottom:72px}.subject-note{display:none}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.cutout{will-change:auto}}
+  </style>
+  <script>
+    // The public entry point exists before the library or scene is available.
+    window.__pendingProgress = 0;
+    window.setProgress = function(p) {
+      const n = Number(p);
+      window.__pendingProgress = Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : 0;
+      if (window.__applyProgress) window.__applyProgress(window.__pendingProgress);
+    };
+  </script>
+  <script defer src="./vendor/three.min.js"></script>
+</head>
+<body>
+  <a class="skip" href="#enquiry" data-enquiry>Skip to enquiry</a>
+  <main id="journey" aria-label="From Dubai to your world: a five-part shipping journey">
+    <section class="stage" aria-label="Interactive export journey">
+      <div class="scene-backdrop" aria-hidden="true"><canvas id="scene"></canvas><img class="poster" src="./assets/poster.svg" alt=""></div>
+      <div class="copy-scrim" aria-hidden="true"></div>
+      <header class="topbar">
+        <a href="#warehouse" class="brand" data-moment="0" aria-label="BUY and CELL, back to warehouse"><svg viewBox="0 0 32 37" fill="none" aria-hidden="true"><path d="M10 2H28V28H10V2Z" stroke="currentColor" stroke-width="2.3"/><path d="M4 9H22V35H4V9Z" fill="var(--paper)" stroke="currentColor" stroke-width="2.3"/><path d="M9 15H17M10 29H16" stroke="currentColor" stroke-width="2"/></svg><span class="brand-word">BUY<span>&</span>CELL</span></a>
+        <nav class="topnav" aria-label="Main navigation"><a href="#warehouse" data-moment="0">The journey</a><a href="#sea" data-moment=".75">By sea</a><a href="#air" data-moment="1">By air</a></nav>
+        <button class="enquire" data-enquiry aria-label="Start an enquiry">Start <span class="desktop-word">an enquiry</span><span class="arrow" aria-hidden="true">↗</span></button>
+      </header>
+      <div class="top-rule" aria-hidden="true"></div>
+      <div class="scene-label" aria-hidden="true"><strong id="scene-caption">A good journey starts here</strong><span id="scene-code">DXB / 01</span></div>
+      <div class="scene-index" id="scene-index" aria-hidden="true">01</div>
+      <div class="cutouts" aria-hidden="true">
+        <figure class="cutout" data-key="0"><img src="./assets/cutouts/warehouse.webp" alt="" width="320" height="400"><figcaption>The cargo. Possibilities inside.</figcaption></figure>
+        <figure class="cutout" data-key=".25"><img src="./assets/cutouts/loading.webp" alt="" width="320" height="400"><figcaption>Ready for the next move.</figcaption></figure>
+        <figure class="cutout" data-key=".5"><img src="./assets/cutouts/road.webp" alt="" width="320" height="400"><figcaption>Connected, beyond borders.</figcaption></figure>
+        <figure class="cutout" data-key=".75"><img src="./assets/cutouts/sea.webp" alt="" width="320" height="400"><figcaption>Across the Gulf.</figcaption></figure>
+        <figure class="cutout" data-key="1"><img src="./assets/cutouts/air.webp" alt="" width="320" height="400"><figcaption>A world of opportunity.</figcaption></figure>
+      </div>
+      <article class="copy" aria-live="polite" aria-atomic="true">
+        <p class="eyebrow"><span class="chapter-number" id="chapter-number">01 / 05</span><span id="chapter-title">The beginning · Dubai, UAE</span></p>
+        <h1 id="headline">From Dubai.<br> To your<br> <span class="soft">world.</span></h1>
+        <p class="description" id="description">Mobile phones. Global possibilities. Follow the journey from our warehouse to your next opportunity.</p>
+        <button class="copy-action" id="copy-action">Follow the journey <span class="arrow" aria-hidden="true">↓</span></button>
+        <div class="copy-meta"><span>Mobile phone exports</span><span>Made for a connected world</span></div>
+      </article>
+      <div class="subject-note" id="subject-note" aria-hidden="true">Sealed. Stacked. Ready to move.</div>
+      <p class="fallback-note" role="status">Still view · Scroll to follow the journey</p>
+      <footer class="journey-footer">
+        <div class="footer-top"><span class="route-label">Dubai, UAE <svg viewBox="0 0 49 8" fill="none" aria-hidden="true"><path d="M0 4h47m-4-3 4 3-4 3" stroke="currentColor"/></svg> Your world</span><span class="scroll-hint"><span class="mouse" aria-hidden="true"></span><span id="scroll-hint">Scroll to follow the cargo</span></span></div>
+        <div class="rail" aria-hidden="true"><div class="rail-fill" id="rail-fill"></div></div>
+        <nav class="chapters" aria-label="Journey chapters">
+          <button class="chapter" data-moment="0" aria-current="step"><span class="num">01</span><span class="label">Warehouse</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".25"><span class="num">02</span><span class="label">Loading</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".5"><span class="num">03</span><span class="label">Road</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".75"><span class="num">04</span><span class="label">Sea</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment="1"><span class="num">05</span><span class="label">Air</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+        </nav>
+      </footer>
+    </section>
+  </main>
+  <aside class="debug" id="debug" hidden aria-label="Scene debugging"><label for="progress-slider">Progress</label><input id="progress-slider" type="range" min="0" max="1" step=".001" value="0" aria-label="Scene progress"><output id="progress-value">0.000</output><span class="fps" id="fps">— FPS</span><button id="resume-scroll">Use scroll</button></aside>
+  <dialog id="enquiry" aria-labelledby="enquiry-title"><button class="dialog-close" aria-label="Close enquiry">×</button><p class="dialog-kicker">BUY & CELL / Let's talk trade</p><h2 id="enquiry-title">Your next shipment<br>starts with a hello.</h2><p>Tell us what you're sourcing and where it's going. Prepare an enquiry to share with your BUY & CELL contact.</p><form id="enquiry-form"><label>Your name<input name="name" autocomplete="name" required maxlength="100" placeholder="Full name"></label><label>Company<input name="company" autocomplete="organization" required maxlength="120" placeholder="Company name"></label><label class="full">Email<input name="email" type="email" autocomplete="email" required maxlength="160" placeholder="you@company.com"></label><label>Destination<input name="destination" required maxlength="120" placeholder="Country / port"></label><label>Quantity<input name="quantity" type="number" min="1" step="1" max="1000000" required placeholder="Number of phones"></label><label class="full">What are you looking for?<textarea name="requirements" required maxlength="2000" placeholder="Models, specifications and preferred shipping method"></textarea></label><button class="enquire form-submit" type="submit">Prepare enquiry<span class="arrow">↗</span></button><p class="form-note">Creates a shareable enquiry. Nothing is sent automatically.</p></form><div id="enquiry-result" class="form-success" hidden><p>Your enquiry is ready to share with your buying contact.</p><pre id="enquiry-summary"></pre><a id="enquiry-download" download="buy-and-cell-enquiry.txt">Download enquiry ↗</a><button id="enquiry-copy">Copy enquiry</button></div></dialog>
+  <noscript><style>.copy-action,.enquire,.chapters{display:none}</style><p style="position:fixed;bottom:20px;left:7%;font-size:12px">Enable JavaScript to explore the shipping journey.</p></noscript>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const clamp = (v,a=0,b=1) => Math.min(b,Math.max(a,v));
+    const mix = (a,b,t) => a+(b-a)*t;
+    const ease = t => {t=clamp(t);return t*t*(3-2*t)};
+    const range = (p,a,b) => ease((p-a)/(b-a));
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stages = [
+      {name:'Warehouse',title:'The beginning · Dubai, UAE',headline:'From Dubai.<br> To your<br> <span class="soft">world.</span>',body:'Mobile phones. Global possibilities. Follow the journey from our warehouse to your next opportunity.',action:'Follow the journey',caption:'A good journey starts here',note:'Sealed. Stacked. Ready to move.'},
+      {name:'Loading',title:'Handled with purpose',headline:'Every box.<br> A new<br> <span class="soft">possibility.</span>',body:'From one carefully stacked pallet to a container ready to go. The next chapter starts with the smallest details.',action:'Keep it moving',caption:'Packed for the possibilities ahead',note:'One pallet. One connected journey.'},
+      {name:'Road',title:'The road ahead',headline:'On the road.<br> Towards<br> <span class="soft">what’s next.</span>',body:'The warehouse falls behind. The horizon opens up. From Dubai’s roads to the gateway to your market.',action:'Meet the open sea',caption:'Every mile brings us closer',note:'From our door to your next opportunity.'},
+      {name:'Sea',title:'Beyond the shoreline',headline:'Across seas.<br> Closer to<br> <span class="soft">you.</span>',body:'Out on the Gulf, the journey finds a new rhythm. Container by container, connecting Dubai with the world.',action:'Take to the skies',caption:'New horizons, same destination',note:'By sea. Beyond borders.'},
+      {name:'Air',title:'A world within reach',headline:'New heights.<br> New<br> <span class="soft">connections.</span>',body:'By road, by sea or through the sky. Wherever your business takes you, let’s start the next journey together.',action:'Start an enquiry',caption:'Your next chapter is waiting',note:'From Dubai. To your world.'}
+    ];
+    let currentStage=-1, progress=window.__pendingProgress, target=progress, manual=false, ready=false, failed=false;
+    let renderer, scene, camera, world, objects={}, materials={}, baseline=[], curve, wheelBatches=[], seaStreaks;
+    let viewport={width:innerWidth,height:innerHeight}, lastTime=0, fpsTime=0, fpsFrames=0, stats;
+    const debugMode=new URLSearchParams(location.search).has('debug');
+    $('debug').hidden=!debugMode;
+    const stageButtons=[...document.querySelectorAll('.chapter')];
+    const cutouts=[...document.querySelectorAll('.cutout')];
+    cutouts.forEach(el=>el.querySelector('img').addEventListener('error',()=>{el.hidden=true}));
+    const colors={Chalk:'#F1F2F0',Asphalt:'#2B2E33',Gulf:'#0A5C99',Signal:'#FF5B1F',Haze:'#D5DDE2',Graphite:'#4A5058'};
+    function colorMix(a,b,t){const h=s=>s.match(/\w\w/g).map(n=>parseInt(n,16));const A=h(a.slice(1)),B=h(b.slice(1));return 'rgb('+A.map((v,i)=>Math.round(mix(v,B[i],t))).join(',')+')'}
+    function updateCopy(p){
+      const stage=Math.min(4,Math.floor(p*4+.5));
+      const seaTone=range(p,.52,.71), theme=colorMix(colors.Chalk,colors.Gulf,seaTone);
+      document.documentElement.style.setProperty('--paper',theme);
+      document.documentElement.style.setProperty('--ink',seaTone>.76?colors.Chalk:colors.Asphalt);
+      document.documentElement.style.setProperty('--line',seaTone>.76?'rgba(241,242,240,.25)':'rgba(43,46,51,.2)');
+      $('description').style.opacity=seaTone>.2&&seaTone<.9?'1':'.76';
+      document.querySelector('meta[name=theme-color]').content=theme;
+      $('rail-fill').style.width=(p*100)+'%';
+      $('progress-slider').value=p; $('progress-value').value=p.toFixed(3);
+      if(stage!==currentStage){
+        currentStage=stage;const s=stages[stage];
+        $('chapter-number').textContent=String(stage+1).padStart(2,'0')+' / 05';
+        $('chapter-title').textContent=s.title;$('headline').innerHTML=s.headline;$('headline').setAttribute('aria-label',s.headline.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim());
+        $('description').textContent=s.body;$('copy-action').innerHTML=s.action+' <span class="arrow" aria-hidden="true">'+(stage===4?'↗':'↓')+'</span>';
+        $('scene-caption').textContent=s.caption;$('scene-code').textContent='DXB / 0'+(stage+1);
+        $('scene-index').textContent='0'+(stage+1);$('subject-note').textContent=s.note;
+        $('scroll-hint').textContent=stage===4?'Your next journey starts here':'Scroll to follow the cargo';
+        stageButtons.forEach((el,i)=>{if(i===stage)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current')});
+      }
+      cutouts.forEach(el=>{
+        const key=Number(el.dataset.key),d=p-key;
+        const opacity=key===0?1-range(p,.035,.19):range(p,key-.11,key-.025)*(1-range(p,key+.025,key+.19));
+        el.style.opacity=opacity.toFixed(3);el.style.visibility=opacity<.001?'hidden':'visible';
+        el.style.transform='translate3d('+(-d*40)+'px,'+(reduced?0:-d*150)+'px,0) rotate('+(-7+d*12)+'deg)';
+        el.style.filter='blur('+(reduced?0:(1-opacity)*7)+'px)';
+      });
+      return seaTone;
+    }
+    function fallback(error){failed=true;ready=false;document.body.classList.add('webgl-failed');document.body.classList.remove('scene-ready');if(error)console.warn('The 3D view is unavailable. Showing the local poster.',error.message||error)}
+    function build(){
+      if(!window.THREE){fallback('Local Three.js could not load');return}
+      const T=THREE;
+      if(debugMode&&new URLSearchParams(location.search).has('poster'))throw new Error('Requested poster fallback preview');
+      renderer=new T.WebGLRenderer({canvas:$('scene'),antialias:true,alpha:false,powerPreference:'high-performance'});
+      renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(viewport.width,viewport.height,false);
+      renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;
+      renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+      scene=new T.Scene();scene.background=new T.Color(colors.Chalk);
+      camera=new T.OrthographicCamera(-20,20,14,-14,.1,600);camera.name='JourneyCamera';
+      world=new T.Group();world.name='World';scene.add(world);objects.World=world;
+      for(const [name,color] of Object.entries(colors)){const m=new T.MeshStandardMaterial({color,roughness:1,metalness:0});m.name='Mat_'+name;materials[name]=m}
+      const boxGeometry=new T.BoxGeometry(1,1,1), cylinderGeometry=new T.CylinderGeometry(1,1,1,16);
+      const dummy=new T.Object3D();
+      function group(name,parent=world){const g=new T.Group();g.name=name;parent.add(g);if(name)objects[name]=g;return g}
+      function mesh(g,geometry,mat,pos=[0,0,0],scale=[1,1,1],rot=[0,0,0]){const m=new T.Mesh(geometry,materials[mat]);m.position.set(...pos);m.scale.set(...scale);m.rotation.set(...rot);m.castShadow=true;m.receiveShadow=true;g.add(m);return m}
+      function box(g,mat,pos,scale,rot){return mesh(g,boxGeometry,mat,pos,scale,rot)}
+      function batch(g,geometry,mat,transforms,name=''){
+        const m=new T.InstancedMesh(geometry,materials[mat],transforms.length);m.name=name;
+        transforms.forEach((v,i)=>{dummy.position.set(...(v.p||[0,0,0]));dummy.rotation.set(...(v.r||[0,0,0]));dummy.scale.set(...(v.s||[1,1,1]));dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix)});
+        m.castShadow=true;m.receiveShadow=true;m.computeBoundingSphere();g.add(m);return m;
+      }
+      function extrude(g,mat,points,depth,pos=[0,0,0],rotation=[Math.PI/2,0,0],bevel=.06){
+        const shape=new T.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();
+        return mesh(g,new T.ExtrudeGeometry(shape,{depth,bevelEnabled:bevel>0,bevelThickness:bevel,bevelSize:bevel,bevelSegments:1,steps:1,curveSegments:4}),mat,pos,[1,1,1],rotation);
+      }
+      function wheels(g,locations,radius,width){
+        const tires=batch(g,cylinderGeometry,'Asphalt',locations.map(p=>({p,s:[radius,width,radius],r:[Math.PI/2,0,0]})));
+        batch(g,cylinderGeometry,'Haze',locations.map(p=>({p:[p[0],p[1],p[2]+Math.sign(p[2])*width*.52],s:[radius*.43,.025,radius*.43],r:[Math.PI/2,0,0]})));
+        wheelBatches.push(tires);
+      }
+      const sunGroup=group('Sun'),sun=new T.DirectionalLight(0xffffff,2);sunGroup.position.set(-22,32,20);sunGroup.add(sun);sunGroup.target=sun.target;sun.castShadow=true;
+      sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-24,right:24,top:22,bottom:-22,near:1,far:100});sun.shadow.bias=-.00025;sun.shadow.normalBias=.04;world.add(sun.target);
+      const fillGroup=group('Fill'),fill=new T.HemisphereLight(0xffffff,0x8998a5,1.2);fillGroup.add(fill);
+      const warehouse=group('Warehouse');
+      box(warehouse,'Chalk',[-105,-.38,0],[345,.5,500]); // Land ends at x=67.5; the shoreline is a real edge.
+      box(warehouse,'Haze',[-2,-.17,0],[27,.22,11]);
+      box(warehouse,'Chalk',[-3,-.04,0],[26.5,.12,10.5]);
+      // A cutaway loading bay, built from panels around an opening.
+      box(warehouse,'Haze',[-12,2.8,-5.25],[2,5.6,.25]);box(warehouse,'Chalk',[-.5,2.8,-5.25],[13,5.6,.25]);
+      box(warehouse,'Chalk',[-9,5.1,-5.25],[4,1,.25]);
+      box(warehouse,'Asphalt',[-11,2.3,-5.02],[.12,4.6,.12]);box(warehouse,'Asphalt',[-7,2.3,-5.02],[.12,4.6,.12]);box(warehouse,'Asphalt',[-9,4.6,-5.02],[4.1,.12,.12]);
+      batch(warehouse,boxGeometry,'Haze',[-11,-4,3].map(x=>({p:[x,5.65,-1.5],s:[.18,.26,7.5]})));
+      batch(warehouse,boxGeometry,'Haze',[-10,-5,0,5].map(x=>({p:[x,2.85,-5.03],s:[.13,5.6,.12]})));
+      batch(warehouse,boxGeometry,'Haze',[-11,-8,-5,-2,1,4,7].map(x=>({p:[x,.157,4.2],s:[1.7,.008,.035]})));
+      const truck=group('Truck');
+      box(truck,'Asphalt',[1.1,.82,0],[14.4,.4,2.06]);box(truck,'Graphite',[7.45,1.8,0],[2.65,2.3,2.45]);
+      box(truck,'Graphite',[8.3,1.15,0],[1.35,.9,2.55]);box(truck,'Asphalt',[8.81,2.16,0],[.025,.8,2.1]);
+      box(truck,'Asphalt',[7.6,2.25,1.24],[1.6,.85,.025]);box(truck,'Asphalt',[7.6,2.25,-1.24],[1.6,.85,.025]);
+      box(truck,'Haze',[8.99,1.05,0],[.13,.18,2.35]);box(truck,'Asphalt',[9.07,1.4,0],[.025,.3,1]);
+      batch(truck,boxGeometry,'Haze',[-.88,.88].map(z=>({p:[9.03,1.44,z],s:[.03,.18,.35]})));
+      batch(truck,boxGeometry,'Graphite',[-1.43,1.43].map(z=>({p:[7.9,2.5,z],s:[.25,.4,.17]})));
+      wheels(truck,[-4.6,-2.9,7.4].flatMap(x=>[-1.18,1.18].map(z=>[x,.57,z])),.57,.35);
+      const container=group('Container',truck);container.position.y=1.14;
+      box(container,'Signal',[0,.10,0],[12.2,.2,2.4]);box(container,'Signal',[0,2.55,0],[12.2,.12,2.4]);
+      box(container,'Signal',[0,1.32,-1.17],[12.2,2.5,.07]);box(container,'Signal',[0,1.32,1.17],[12.2,2.5,.07]);box(container,'Signal',[6.05,1.32,0],[.1,2.5,2.4]);
+      batch(container,boxGeometry,'Signal',[-5.95,5.95].flatMap(x=>[-1.18,1.18].map(z=>({p:[x,1.3,z],s:[.16,2.6,.16]}))));
+      batch(container,boxGeometry,'Signal',Array.from({length:20},(_,i)=>({p:[-5.5+(i%10)*1.22,1.32,i<10?-1.23:1.23],s:[.08,2.4,.08]})));
+      const left=group('DoorLeft',container);left.position.set(-6.1,.15,1.2);
+      box(left,'Signal',[0,1.16,-.6],[.12,2.32,1.2]);
+      const right=group('DoorRight',container);right.position.set(-6.1,.15,-1.2);
+      box(right,'Signal',[0,1.16,.6],[.12,2.32,1.2]);
+      for(const [g,sign] of [[left,-1],[right,1]]){
+        batch(g,boxGeometry,'Graphite',[.3,.9].map(z=>({p:[-.075,1.16,sign*z],s:[.035,2.1,.035]})));
+        batch(g,boxGeometry,'Signal',[.2,.45,.7,.95].map(z=>({p:[-.07,1.16,sign*z],s:[.05,2.25,.04]})));
+      }
+      const pallet=group('Pallet');
+      batch(pallet,boxGeometry,'Graphite',[-.47,0,.47].map(x=>({p:[x,.06,0],s:[.12,.12,.8]})));
+      batch(pallet,boxGeometry,'Graphite',Array.from({length:5},(_,i)=>({p:[0,.14,-.34+i*.17],s:[1.2,.05,.13]})));
+      batch(pallet,boxGeometry,'Graphite',[-.47,0,.47].map(x=>({p:[x,.015,0],s:[.15,.03,.8]})));
+      const cartonPositions=[];
+      for(let l=0;l<4;l++)for(let x=0;x<3;x++)for(let z=0;z<2;z++){
+        const n=cartonPositions.length+1,position=[(x-1)*.4,.305+l*.25,(z-.5)*.4];cartonPositions.push(position);
+        const anchor=group('Carton_'+String(n).padStart(2,'0'),pallet);anchor.position.set(...position);anchor.userData.instanceId=n-1;anchor.userData.component='Carton';
+      }
+      batch(pallet,boxGeometry,'Haze',cartonPositions.map(p=>({p,s:[.39,.24,.39]})),'Carton');
+      batch(pallet,boxGeometry,'Asphalt',cartonPositions.map(p=>({p:[p[0],p[1]+.122,p[2]],s:[.045,.005,.29]})));
+      batch(pallet,boxGeometry,'Chalk',cartonPositions.map(p=>({p:[p[0],p[1],p[2]+.197],s:[.18,.08,.004]})));
+      const beam=group('ScanBeam');box(beam,'Signal',[0,0,0],[1.23,.018,.018]);
+      const forklift=group('Forklift');
+      box(forklift,'Gulf',[-.1,.61,0],[1.9,.67,1.02]);box(forklift,'Gulf',[-.85,.88,0],[.5,.7,1.08]);box(forklift,'Graphite',[.1,.9,0],[.65,.15,.8]);
+      box(forklift,'Asphalt',[-.15,1.12,0],[.47,.18,.52]);box(forklift,'Asphalt',[-.42,1.35,0],[.13,.5,.52]);
+      batch(forklift,boxGeometry,'Graphite',[-.8,.7].flatMap(x=>[-.48,.48].map(z=>({p:[x,1.55,z],s:[.07,1.5,.07]}))));box(forklift,'Graphite',[-.05,2.3,0],[1.8,.09,1.13]);
+      batch(forklift,boxGeometry,'Asphalt',[-.43,.43].map(z=>({p:[1.03,1.25,z],s:[.13,2.4,.13]})));
+      batch(forklift,boxGeometry,'Graphite',[.45,1.1,1.8,2.4].map(y=>({p:[1.04,y,0],s:[.12,.09,.92]})));
+      const forks=group('Forks',forklift);forks.position.y=.17;box(forks,'Graphite',[1.11,.28,0],[.12,.55,1]);
+      batch(forks,boxGeometry,'Graphite',[-.3,.3].map(z=>({p:[1.7,0,z],s:[1.3,.07,.12]})));
+      wheels(forklift,[-.65,.65].flatMap(x=>[-.55,.55].map(z=>[x,.32,z])),.32,.22);
+      const road=group('Road');
+      curve=new T.CatmullRomCurve3([new T.Vector3(-18,0,0),new T.Vector3(0,0,0),new T.Vector3(15,0,0),new T.Vector3(30,0,8),new T.Vector3(43,0,-5),new T.Vector3(57,0,-7),new T.Vector3(72,0,0)]);
+      const roadEdgeA=[],roadEdgeB=[];for(let i=0;i<=120;i++){const t=i/120,c=curve.getPoint(t),v=curve.getTangent(t),n=new T.Vector3(-v.z,0,v.x).normalize();roadEdgeA.push([c.x+n.x*4.6,c.z+n.z*4.6]);roadEdgeB.unshift([c.x-n.x*4.6,c.z-n.z*4.6])}
+      extrude(road,'Asphalt',roadEdgeA.concat(roadEdgeB),.09,[0,0,0],[Math.PI/2,0,0],0);
+      const dashes=group('RoadDashes',road),dashTransforms=[];
+      for(let i=0;i<52;i++){const t=i/51,c=curve.getPoint(t),v=curve.getTangent(t);dashTransforms.push({p:[c.x,.012,c.z],s:[.85,.018,.10],r:[0,-Math.atan2(v.z,v.x),0]})}batch(dashes,boxGeometry,'Haze',dashTransforms);
+      batch(road,boxGeometry,'Haze',Array.from({length:180},(_,i)=>{const t=(i%90)/89,c=curve.getPoint(t),v=curve.getTangent(t),sign=i<90?1:-1;return {p:[c.x-v.z*4.1*sign,.012,c.z+v.x*4.1*sign],s:[1.05,.015,.05],r:[0,-Math.atan2(v.z,v.x),0]}}));
+      const sea=group('Sea');const water=box(sea,'Gulf',[90,-.59,0],[700,.2,700]);water.receiveShadow=false;water.castShadow=false;
+      const streakTransforms=Array.from({length:65},(_,i)=>({p:[70+(i*17%120),-.475,-55+(i*23%110)],s:[.3+(i%5)*.2,.006,.025],r:[0,-.3,0]}));
+      seaStreaks=batch(sea,boxGeometry,'Haze',streakTransforms);seaStreaks.castShadow=false;seaStreaks.receiveShadow=false;seaStreaks.userData.base=streakTransforms;
+      const ship=group('Ship');
+      extrude(ship,'Graphite',[[-13,-3.4],[9.5,-3.4],[14,-1.2],[15,0],[14,1.2],[9.5,3.4],[-13,3.4]],1.5,[0,1.05,0]);
+      extrude(ship,'Asphalt',[[-12.7,-3.15],[9.3,-3.15],[13.8,-1],[14.6,0],[13.8,1],[9.3,3.15],[-12.7,3.15]],.12,[0,1.13,0],undefined,.025);
+      box(ship,'Haze',[-10,2.15,0],[3.3,2,5.2]);box(ship,'Chalk',[-10,3.35,0],[3.2,.6,5.4]);box(ship,'Asphalt',[-8.38,3.4,0],[.035,.3,4.9]);box(ship,'Asphalt',[-10,3.4,2.72],[2.8,.3,.025]);box(ship,'Chalk',[-10,4,0],[2.5,.7,3.6]);box(ship,'Graphite',[-11,4.9,0],[1,1.2,1.2]);
+      box(ship,'Haze',[-10,5.7,0],[.09,1.3,.09]);box(ship,'Haze',[-10,6.25,0],[.09,.08,2]);
+      const stacks=group('ShipStacks',ship),stackBuckets={Signal:[],Gulf:[],Asphalt:[],Haze:[]};
+      for(let bay=0;bay<4;bay++)for(let row=0;row<3;row++)for(let level=0;level<2;level++){
+        const i=bay*6+row*2+level,c=i===3||i===18?'Gulf':i===9||i===20?'Asphalt':i===15||i===23?'Haze':'Signal';stackBuckets[c].push({p:[-5.7+bay*4.3,1.9+level*1.5,-2.1+row*2.1],s:[4.05,1.43,1.96]});
+      }
+      for(const [c,transforms]of Object.entries(stackBuckets)){
+        batch(stacks,boxGeometry,c,transforms,'ContainerBlock_'+c);
+        const ribs=[];transforms.forEach(t=>{for(let n=0;n<7;n++)for(const side of [-1,1])ribs.push({p:[t.p[0]-1.8+n*.6,t.p[1],t.p[2]+side*1.005],s:[.045,1.35,.045]})});batch(stacks,boxGeometry,c,ribs);
+      }
+      const wake=group('Wake',ship);
+      extrude(wake,'Haze',[[-13,-3],[-25,-5.6],[-21,-3.8],[-13,-2.8]],.008,[0,-.44,0],undefined,0);
+      extrude(wake,'Haze',[[-13,3],[-25,5.6],[-21,3.8],[-13,2.8]],.008,[0,-.44,0],undefined,0);
+      batch(wake,boxGeometry,'Haze',Array.from({length:12},(_,i)=>({p:[-14-i*.9,-.435,((i*7)%5-2)*.65],s:[1.3-i*.05,.008,.035]})));
+      const plane=group('Plane');
+      // Rounded fuselage and wings are extruded outlines; the scene imports no models.
+      const fuselage=[[-8,-.3],[-6.5,-.67],[5.9,-.67],[7.4,-.45],[8.25,0],[7.4,.45],[5.9,.67],[-6.5,.67],[-8,.3]];
+      extrude(plane,'Chalk',fuselage,.8,[0,.4,0],undefined,.2);
+      extrude(plane,'Chalk',[[2.6,-.5],[-2.1,-8.2],[-4,-8.5],[-2.9,-.5]],.12,[0,0,0]);
+      extrude(plane,'Chalk',[[2.6,.5],[-2.1,8.2],[-4,8.5],[-2.9,.5]],.12,[0,0,0]);
+      extrude(plane,'Chalk',[[-5.3,-.3],[-7.1,-3.1],[-8.1,-3.1],[-7.5,-.3]],.1,[0,.2,0]);
+      extrude(plane,'Chalk',[[-5.3,.3],[-7.1,3.1],[-8.1,3.1],[-7.5,.3]],.1,[0,.2,0]);
+      extrude(plane,'Gulf',[[-7.8,.2],[-5.2,.2],[-6.6,3],[-7.7,3]],.16,[0,0,-.08],[0,0,0]);
+      batch(plane,cylinderGeometry,'Graphite',[-3.1,3.1].map(z=>({p:[.1,-.55,z],s:[.57,2.2,.57],r:[0,0,Math.PI/2]})));
+      batch(plane,cylinderGeometry,'Asphalt',[-3.1,3.1].map(z=>({p:[1.22,-.55,z],s:[.4,.025,.4],r:[0,0,Math.PI/2]})));
+      box(plane,'Asphalt',[6.75,.62,0],[.8,.08,.85],[0,0,-.15]);
+      batch(plane,boxGeometry,'Asphalt',Array.from({length:24},(_,i)=>({p:[-4.9+(i%12)*.86,.21,i<12?-.76:.76],s:[.12,.16,.012]})));
+      const shadow=group('PlaneShadow'),shadowGeometry=cylinderGeometry.clone();
+      shadowGeometry.setAttribute('aSoftShadow',new T.Float32BufferAttribute(new Float32Array(shadowGeometry.attributes.position.count).fill(1),1));
+      const shadowDisc=mesh(shadow,shadowGeometry,'Asphalt',[0,0,0],[7.8,.008,2.4]);shadowDisc.castShadow=false;shadowDisc.receiveShadow=false;
+      // The same Asphalt material gives the ellipse a soft edge via a geometry attribute.
+      // Other Asphalt geometry has the default zero attribute and remains fully opaque.
+      materials.Asphalt.transparent=true;
+      materials.Asphalt.onBeforeCompile=shader=>{
+        shader.vertexShader='attribute float aSoftShadow; varying float vSoftShadow; varying vec3 vShadowPosition;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSoftShadow=aSoftShadow; vShadowPosition=position;');
+        shader.fragmentShader='varying float vSoftShadow; varying vec3 vShadowPosition;\n'+shader.fragmentShader;
+        shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(vSoftShadow>0.5){gl_FragColor.a*=0.30*(1.0-smoothstep(0.15,1.0,length(vShadowPosition.xz)));}');
+      };
+      materials.Asphalt.customProgramCacheKey=()=> 'shared-asphalt-soft-shadow-v1';
+      shadow.scale.setScalar(.9);
+      objects.Wheel=wheelBatches[0];objects.Wheel.name='Wheel';
+      // Store a pristine pose once. setProgress restores it before applying analytic transforms.
+      world.traverse(o=>baseline.push({o,position:o.position.clone(),quaternion:o.quaternion.clone(),scale:o.scale.clone(),visible:o.visible}));
+      ready=true;document.body.classList.add('scene-ready');
+      const materialSet=new Set();let triangles=0,instances=0;
+      world.traverse(o=>{if(o.isMesh){materialSet.add(o.material);triangles+=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);if(o.isInstancedMesh)instances+=o.count}});
+      stats={materials:materialSet.size,triangles:Math.round(triangles),instances};
+      window.journeyScene={scene,world,camera,renderer,objects,materials,stats,get progress(){return progress},get ready(){return ready},snapshot(){const result=[];world.updateMatrixWorld(true);world.traverse(o=>{if(o===seaStreaks)return;result.push({id:o.uuid,parent:o.parent?.uuid,p:o.position.toArray(),q:o.quaternion.toArray(),s:o.scale.toArray(),v:o.visible})});result.sort((a,b)=>a.id.localeCompare(b.id));return JSON.stringify({objects:result,camera:{p:camera.position.toArray(),q:camera.quaternion.toArray(),projection:camera.projectionMatrix.toArray()}})}};
+      resize();
+    }
+    function applyProgress(p){
+      progress=p;const seaTone=updateCopy(p);if(!ready)return;
+      const T=THREE,o=objects;
+      for(const b of baseline){b.o.position.copy(b.position);b.o.quaternion.copy(b.quaternion);b.o.scale.copy(b.scale);b.o.visible=b.visible}
+      const roadT=mix(.198,.88,range(p,.30,.64)), truckPosition=curve.getPoint(roadT),tangent=curve.getTangent(roadT);
+      // Keep the truck stationary and aligned with the bay until departure.
+      if(p<=.30)o.Truck.position.set(0,0,0);else o.Truck.position.copy(truckPosition).sub(curve.getPoint(.198));
+      o.Truck.rotation.y=p<=.30?0:-Math.atan2(tangent.z,tangent.x);
+      const doorClose=range(p,.23,.27);o.DoorLeft.rotation.y=mix(-Math.PI*.83,0,doorClose);o.DoorRight.rotation.y=mix(Math.PI*.83,0,doorClose);
+      const lift=range(p,.035,.105),insert=range(p,.105,.18),withdraw=range(p,.185,.235),park=range(p,.235,.30);
+      const forkliftX=mix(-10.55,-7.15,insert)-withdraw*3.4;
+      o.Forklift.position.set(forkliftX,.02,park*3.3);o.Forklift.rotation.y=-park*Math.PI*.22;
+      o.Forks.position.y=mix(.17,1.30,lift)*(1-range(p,.21,.265)*.87);
+      const closed=p>=.27;
+      if(closed){if(o.Pallet.parent!==o.Container)o.Container.add(o.Pallet);o.Pallet.position.set(-5.1,.2,0)}
+      else{if(o.Pallet.parent!==world)world.add(o.Pallet);o.Pallet.position.set(mix(-8.5,-5.1,insert),mix(.18,1.34,lift),0)}
+      o.Pallet.rotation.set(0,0,0);o.Pallet.scale.set(1,1,1);
+      o.ScanBeam.position.set(o.Pallet.position.x,.45+range(p,0,.09)*.82,.408);o.ScanBeam.visible=p<.105;
+      o.Ship.position.set(mix(86,104,range(p,.56,1)),0,mix(8,12,range(p,.56,1))+range(p,.82,1)*24);o.Ship.rotation.y=-.22-range(p,.82,1)*.7;
+      const flight=range(p,.80,1);o.Plane.position.set(mix(79,118,flight),mix(9,14,flight),mix(21,-9,flight));o.Plane.rotation.set(0,.42,mix(.06,0,flight));
+      o.PlaneShadow.position.set(o.Plane.position.x+4,-.465,o.Plane.position.z-2);o.PlaneShadow.rotation.y=o.Plane.rotation.y;
+      // Camera poses blend continuously in the same world: dock → road → sea → sky.
+      const cameraTarget=new T.Vector3(-2.2,1.1,0);
+      const roadFollow=range(p,.28,.43);cameraTarget.lerp(new T.Vector3(o.Truck.position.x+1,1.5,o.Truck.position.z),roadFollow);
+      const seaFollow=range(p,.555,.72);cameraTarget.lerp(new T.Vector3(o.Ship.position.x,0,o.Ship.position.z),seaFollow);
+      const airFollow=range(p,.815,.97);cameraTarget.lerp(o.Plane.position,airFollow);
+      const opening=new T.Vector3(-22,16,28), loading=new T.Vector3(-24,21,29),chase=new T.Vector3(4,22,36),overSea=new T.Vector3(-7,53,20),airView=new T.Vector3(4,31,34);
+      let offset=opening.clone().lerp(loading,range(p,.05,.25));offset.lerp(chase,range(p,.29,.49));offset.lerp(overSea,range(p,.55,.74));offset.lerp(airView,range(p,.82,1));
+      const portrait=viewport.width<900;
+      let height=mix(27.8,26.7,range(p,0,.07));height=mix(height,29,range(p,.10,.25));height=mix(height,30,range(p,.29,.50));height=mix(height,41,range(p,.56,.75));height=mix(height,32,range(p,.84,1));
+      if(portrait)height*=Math.max(1.45,.95/(viewport.width/viewport.height));
+      const aspect=viewport.width/viewport.height;
+      camera.left=-height*aspect/2;camera.right=height*aspect/2;camera.top=height/2;camera.bottom=-height/2;
+      camera.position.copy(cameraTarget).add(offset);camera.lookAt(cameraTarget);camera.updateMatrix();
+      const right=new T.Vector3().setFromMatrixColumn(camera.matrix,0),up=new T.Vector3().setFromMatrixColumn(camera.matrix,1);
+      const shift=portrait?up.multiplyScalar(-height*.205):right.multiplyScalar(-height*aspect*.225);
+      camera.position.add(shift);cameraTarget.add(shift);camera.lookAt(cameraTarget);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+      scene.background.set(colorMix(colors.Chalk,colors.Gulf,seaTone));
+      o.Sun.position.copy(cameraTarget).add(new T.Vector3(-22,32,20));o.Sun.target.position.copy(cameraTarget);o.Fill.children[0].intensity=mix(1.2,1.5,seaTone);
+      o.Warehouse.visible=p<.70;o.Forklift.visible=p<.45;o.Truck.visible=p<.72;o.Road.visible=p<.76;
+      o.Ship.visible=p>.53;o.Wake.visible=p>.53;o.Plane.visible=p>.78;o.PlaneShadow.visible=p>.78;
+      // Native frustum culling handles individual meshes; whole groups are culled only off screen.
+      world.updateMatrixWorld(true);
+      if(debugMode){$('debug').dataset.materials=stats.materials;$('debug').dataset.triangles=stats.triangles}
+    }
+    window.__applyProgress=applyProgress;
+    function resize(){viewport={width:innerWidth,height:innerHeight};if(renderer){renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(viewport.width,viewport.height,false)}setProgress(progress);readScroll()}
+    const track=$('journey');
+    function readScroll(){if(!manual)target=clamp(-track.getBoundingClientRect().top/Math.max(1,track.offsetHeight-viewport.height))}
+    function goTo(p){manual=false;target=clamp(p);window.scrollTo({top:target*(track.offsetHeight-viewport.height),behavior:'instant'});readScroll()}
+    document.querySelectorAll('[data-moment]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();goTo(Number(el.dataset.moment))}));
+    $('copy-action').addEventListener('click',()=>currentStage===4?openEnquiry():goTo((currentStage+1)/4));
+    $('progress-slider').addEventListener('input',e=>{manual=true;target=Number(e.target.value);setProgress(target)});
+    $('resume-scroll').addEventListener('click',()=>{manual=false;readScroll()});
+    addEventListener('scroll',()=>{if(manual)return;readScroll()},{passive:true});
+    addEventListener('wheel',()=>{manual=false;readScroll()},{passive:true});addEventListener('touchstart',()=>{manual=false},{passive:true});
+    addEventListener('resize',resize,{passive:true});
+    document.addEventListener('visibilitychange',()=>{lastTime=0;fpsTime=0;fpsFrames=0});
+    $('scene').addEventListener('webglcontextlost',e=>{e.preventDefault();fallback()});
+    $('scene').addEventListener('webglcontextrestored',()=>{failed=false;ready=true;document.body.classList.remove('webgl-failed');document.body.classList.add('scene-ready');resize()});
+    // Enquiries are intentionally local until the owner supplies a real contact endpoint.
+    let enquiryText='',downloadURL='',previousFocus;
+    const dialog=$('enquiry');
+    function openEnquiry(){previousFocus=document.activeElement;dialog.showModal()}
+    document.querySelectorAll('[data-enquiry]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();openEnquiry()}));
+    document.querySelector('.dialog-close').addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});
+    dialog.addEventListener('close',()=>previousFocus?.focus());
+    $('enquiry-form').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);enquiryText='BUY & CELL — Shipment enquiry\n\n'+[['Name','name'],['Company','company'],['Email','email'],['Destination','destination'],['Quantity','quantity'],['Requirements','requirements']].map(([label,key])=>label+': '+String(f.get(key)).trim()).join('\n');$('enquiry-summary').textContent=enquiryText;if(downloadURL)URL.revokeObjectURL(downloadURL);downloadURL=URL.createObjectURL(new Blob([enquiryText],{type:'text/plain;charset=utf-8'}));$('enquiry-download').href=downloadURL;$('enquiry-result').hidden=false;e.target.hidden=true;$('enquiry-download').focus()});
+    $('enquiry-copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(enquiryText);$('enquiry-copy').textContent='Copied ✓'}catch{$('enquiry-copy').textContent='Use Download enquiry'}});
+    const editEnquiry=document.createElement('button');editEnquiry.type='button';editEnquiry.textContent='Edit enquiry';$('enquiry-result').append(editEnquiry);
+    editEnquiry.addEventListener('click',()=>{$('enquiry-result').hidden=true;$('enquiry-form').hidden=false;$('enquiry-copy').textContent='Copy enquiry';$('enquiry-form').elements.name.focus()});
+    try{build()}catch(error){fallback(error)}
+    setProgress(window.__pendingProgress);readScroll();
+    // Test mode is opt-in and uses this same production scene and public setProgress API.
+    if(new URLSearchParams(location.search).has('test'))runSceneChecks();
+    const previewMoment=new URLSearchParams(location.search).get('p');
+    if(debugMode&&previewMoment!==null){manual=true;target=clamp(Number(previewMoment)||0);setProgress(target)}
+    function runSceneChecks(){
+      const report={ready,checks:[]},check=(name,pass,detail='')=>report.checks.push({name,pass:!!pass,detail});
+      if(ready){
+        check('Exactly six shared materials',stats.materials===6,stats.materials);
+        const required=['World','Warehouse','Pallet','ScanBeam','Forklift','Forks','Truck','Container','DoorLeft','DoorRight','Road','RoadDashes','Sea','Ship','ShipStacks','Wake','Plane','PlaneShadow','Sun','Fill',...Array.from({length:24},(_,i)=>'Carton_'+String(i+1).padStart(2,'0'))];
+        const names={};world.traverse(o=>{if(o.name)names[o.name]=(names[o.name]||0)+1});check('Unique required names',required.every(n=>names[n]===1));
+        check('Required names belong to groups',required.every(n=>world.getObjectByName(n).isGroup));
+        let lights=0;world.traverse(o=>{if(o.isLight)lights++});check('Only two lights',lights===2,lights);
+        check('Exactly 24 carton instances',world.getObjectByName('Carton').count===24);
+        check('Exactly 24 ship container instances',['Signal','Gulf','Asphalt','Haze'].reduce((n,c)=>n+world.getObjectByName('ContainerBlock_'+c).count,0)===24);
+        check('Pixel ratio capped',renderer.getPixelRatio()<=2);check('Instanced repeated parts',stats.instances>200,stats.instances);
+        check('No textures',Object.values(materials).every(m=>!m.map&&m.roughness===1&&m.metalness===0));
+        for(const p of [0,.1,.23,.25,.27,.3,.5,.6,.75,1]){setProgress(p);const first=window.journeyScene.snapshot();setProgress(1-p);setProgress(p);check('Deterministic at '+p,first===window.journeyScene.snapshot())}
+        setProgress(.27);check('Pallet parented to Container',objects.Pallet.parent===objects.Container);
+        const before=objects.Pallet.getWorldPosition(new THREE.Vector3());setProgress(.269999);const after=objects.Pallet.getWorldPosition(new THREE.Vector3());check('Continuous pallet reparent',before.distanceTo(after)<.001,before.distanceTo(after));
+        check('Reverse restores pallet to World',objects.Pallet.parent===world);
+        setProgress(.27);check('Doors fully closed at .27',objects.DoorLeft.rotation.y===0&&objects.DoorRight.rotation.y===0);
+        setProgress(.23);check('Doors open at .23',Math.abs(objects.DoorLeft.rotation.y)>2.5);
+        setProgress(.5);check('Truck travels after .30',objects.Truck.position.length()>1);
+        setProgress(0);manual=true;target=0;
+      }
+      report.stats=stats;
+      const output=document.createElement('output');output.id='scene-test-results';output.hidden=true;output.textContent=JSON.stringify(report);document.body.append(output);window.sceneTestReport=report;
+    }
+    function frame(time){
+      const dt=lastTime?Math.min((time-lastTime)/1000,.05):1/60;lastTime=time;
+      if(!document.hidden){
+        if(!manual&&Math.abs(target-progress)>.000001){const next=reduced?target:mix(progress,target,1-Math.exp(-dt*7));setProgress(Math.abs(next-target)<.00001?target:next)}
+        if(ready&&!failed){
+          // Only water shimmer depends on wall-clock time. Nothing else has an idle loop.
+          if(!reduced&&objects.Ship.visible){const dummy=new THREE.Object3D();seaStreaks.userData.base.forEach((v,i)=>{dummy.position.set(v.p[0]+Math.sin(time*.00025+i)*.25,v.p[1],v.p[2]);dummy.rotation.set(...v.r);dummy.scale.set(v.s[0]*(.8+.2*Math.sin(time*.0005+i)),v.s[1],v.s[2]);dummy.updateMatrix();seaStreaks.setMatrixAt(i,dummy.matrix)});seaStreaks.instanceMatrix.needsUpdate=true}
+          renderer.render(scene,camera);
+        }
+        fpsFrames++;if(!fpsTime)fpsTime=time;if(time-fpsTime>650){$('fps').textContent=Math.round(fpsFrames*1000/(time-fpsTime))+' FPS';fpsTime=time;fpsFrames=0}
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  });
+  </script>
+</body>
+</html>
