@@ -57,7 +57,8 @@
       <div class="top-rule" aria-hidden="true"></div>
       <div class="scene-label" aria-hidden="true"><strong id="scene-caption">A good journey starts here</strong><span id="scene-code">DXB / 01</span></div>
       <div class="scene-index" id="scene-index" aria-hidden="true">01</div>
-      <div class="cutouts" aria-hidden="true">
+      <!-- Keep hidden during 3D review. Remove hidden only after the scene is approved. -->
+      <div class="cutouts" aria-hidden="true" hidden>
         <figure class="cutout" data-key="0"><img src="./assets/cutouts/warehouse.webp" alt="" width="320" height="400"><figcaption>The cargo. Possibilities inside.</figcaption></figure>
         <figure class="cutout" data-key=".25"><img src="./assets/cutouts/loading.webp" alt="" width="320" height="400"><figcaption>Ready for the next move.</figcaption></figure>
         <figure class="cutout" data-key=".5"><img src="./assets/cutouts/road.webp" alt="" width="320" height="400"><figcaption>Connected, beyond borders.</figcaption></figure>
@@ -109,6 +110,7 @@
     let renderer, scene, camera, world, objects={}, materials={}, baseline=[], curve, wheelBatches=[], seaStreaks;
     let viewport={width:innerWidth,height:innerHeight}, lastTime=0, fpsTime=0, fpsFrames=0, stats;
     const debugMode=new URLSearchParams(location.search).has('debug');
+    const reviewMode=new URLSearchParams(location.search).has('review');
     $('debug').hidden=!debugMode;
     const stageButtons=[...document.querySelectorAll('.chapter')];
     const cutouts=[...document.querySelectorAll('.cutout')];
@@ -152,12 +154,25 @@
       renderer=new T.WebGLRenderer({canvas:$('scene'),antialias:true,alpha:false,powerPreference:'high-performance'});
       renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(viewport.width,viewport.height,false);
       renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;
-      renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+      renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFShadowMap;
       scene=new T.Scene();scene.background=new T.Color(colors.Chalk);
-      camera=new T.OrthographicCamera(-20,20,14,-14,.1,600);camera.name='JourneyCamera';
+      camera=new T.PerspectiveCamera(40,viewport.width/viewport.height,.1,600);camera.name='JourneyCamera';
       world=new T.Group();world.name='World';scene.add(world);objects.World=world;
-      for(const [name,color] of Object.entries(colors)){const m=new T.MeshStandardMaterial({color,roughness:1,metalness:0});m.name='Mat_'+name;materials[name]=m}
+      T.ColorManagement.enabled=true;
+      for(const [name,color] of Object.entries(colors)){const m=new T.MeshStandardMaterial({roughness:1,metalness:0});m.color.setStyle(color,T.SRGBColorSpace);m.name='Mat_'+name;materials[name]=m}
+      // Keep the authored Signal hue in display sRGB; light changes its value, not its hue.
+      materials.Signal.toneMapped=false;
+      materials.Signal.onBeforeCompile=shader=>{
+        shader.vertexShader='attribute float aScanner; varying float vScanner;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvScanner=aScanner;');
+        shader.fragmentShader='varying float vScanner;\n'+shader.fragmentShader;
+        shader.fragmentShader=shader.fragmentShader.replace('#include <colorspace_fragment>','#include <colorspace_fragment>\nvec3 signalSRGB=vec3(1.0,91.0/255.0,31.0/255.0); float signalValue=clamp(dot(gl_FragColor.rgb,vec3(.2126,.7152,.0722))/dot(signalSRGB,vec3(.2126,.7152,.0722)),.64,1.0); gl_FragColor.rgb=signalSRGB*signalValue;');
+        shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=diffuseColor.rgb*vScanner*2.0;');
+      };
+      materials.Signal.customProgramCacheKey=()=> 'signal-srgb-scanner-v2';
       const boxGeometry=new T.BoxGeometry(1,1,1), cylinderGeometry=new T.CylinderGeometry(1,1,1,16);
+      const bevelShape=new T.Shape();bevelShape.moveTo(-.48,-.48);bevelShape.lineTo(.48,-.48);bevelShape.lineTo(.48,.48);bevelShape.lineTo(-.48,.48);bevelShape.closePath();
+      const roundedBoxGeometry=new T.ExtrudeGeometry(bevelShape,{depth:.96,bevelEnabled:true,bevelSize:.02,bevelThickness:.02,bevelSegments:1,steps:1});roundedBoxGeometry.translate(0,0,-.48);
       const dummy=new T.Object3D();
       function group(name,parent=world){const g=new T.Group();g.name=name;parent.add(g);if(name)objects[name]=g;return g}
       function mesh(g,geometry,mat,pos=[0,0,0],scale=[1,1,1],rot=[0,0,0]){const m=new T.Mesh(geometry,materials[mat]);m.position.set(...pos);m.scale.set(...scale);m.rotation.set(...rot);m.castShadow=true;m.receiveShadow=true;g.add(m);return m}
@@ -171,38 +186,55 @@
         const shape=new T.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();
         return mesh(g,new T.ExtrudeGeometry(shape,{depth,bevelEnabled:bevel>0,bevelThickness:bevel,bevelSize:bevel,bevelSegments:1,steps:1,curveSegments:4}),mat,pos,[1,1,1],rotation);
       }
-      function wheels(g,locations,radius,width){
+      function wheels(g,locations,radius,width,hubRatio=.36){
         const tires=batch(g,cylinderGeometry,'Asphalt',locations.map(p=>({p,s:[radius,width,radius],r:[Math.PI/2,0,0]})));
-        batch(g,cylinderGeometry,'Haze',locations.map(p=>({p:[p[0],p[1],p[2]+Math.sign(p[2])*width*.52],s:[radius*.43,.025,radius*.43],r:[Math.PI/2,0,0]})));
+        batch(g,cylinderGeometry,'Haze',locations.map(p=>({p:[p[0],p[1],p[2]+Math.sign(p[2])*width*.52],s:[radius*hubRatio,.025,radius*hubRatio],r:[Math.PI/2,0,0]})));
         wheelBatches.push(tires);
       }
-      const sunGroup=group('Sun'),sun=new T.DirectionalLight(0xffffff,2);sunGroup.position.set(-22,32,20);sunGroup.add(sun);sunGroup.target=sun.target;sun.castShadow=true;
-      sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-24,right:24,top:22,bottom:-22,near:1,far:100});sun.shadow.bias=-.00025;sun.shadow.normalBias=.04;world.add(sun.target);
-      const fillGroup=group('Fill'),fill=new T.HemisphereLight(0xffffff,0x8998a5,1.2);fillGroup.add(fill);
+      function contactShadow(g,pos,scale,opacity=.32){
+        const geometry=cylinderGeometry.clone();
+        geometry.setAttribute('aSoftShadow',new T.Float32BufferAttribute(new Float32Array(geometry.attributes.position.count).fill(opacity),1));
+        const contact=mesh(g,geometry,'Asphalt',pos,scale);
+        contact.castShadow=false;contact.receiveShadow=false;contact.renderOrder=2;
+        contact.onBeforeRender=()=>{materials.Asphalt.depthWrite=false};
+        contact.onAfterRender=()=>{materials.Asphalt.depthWrite=true};
+        contact.userData.contactShadow=true;return contact;
+      }
+      const sunGroup=group('Sun'),sun=new T.DirectionalLight(0xffffff,1.8);sunGroup.position.set(-22,32,20);sunGroup.add(sun);sunGroup.target=sun.target;sun.castShadow=true;
+      sun.shadow.mapSize.set(viewport.width<900?1024:2048,viewport.width<900?1024:2048);Object.assign(sun.shadow.camera,{left:-25,right:25,top:24,bottom:-24,near:1,far:100});sun.shadow.bias=-.00008;sun.shadow.normalBias=.015;sun.shadow.radius=4;world.add(sun.target);
+      const fillGroup=group('Fill'),fill=new T.HemisphereLight(0xffffff,0xd5dde2,1.45);fillGroup.add(fill);
       const warehouse=group('Warehouse');
-      box(warehouse,'Chalk',[-105,-.38,0],[345,.5,500]); // Land ends at x=67.5; the shoreline is a real edge.
-      box(warehouse,'Haze',[-2,-.17,0],[27,.22,11]);
-      box(warehouse,'Chalk',[-3,-.04,0],[26.5,.12,10.5]);
-      // A cutaway loading bay, built from panels around an opening.
-      box(warehouse,'Haze',[-12,2.8,-5.25],[2,5.6,.25]);box(warehouse,'Chalk',[-.5,2.8,-5.25],[13,5.6,.25]);
-      box(warehouse,'Chalk',[-9,5.1,-5.25],[4,1,.25]);
-      box(warehouse,'Asphalt',[-11,2.3,-5.02],[.12,4.6,.12]);box(warehouse,'Asphalt',[-7,2.3,-5.02],[.12,4.6,.12]);box(warehouse,'Asphalt',[-9,4.6,-5.02],[4.1,.12,.12]);
-      batch(warehouse,boxGeometry,'Haze',[-11,-4,3].map(x=>({p:[x,5.65,-1.5],s:[.18,.26,7.5]})));
-      batch(warehouse,boxGeometry,'Haze',[-10,-5,0,5].map(x=>({p:[x,2.85,-5.03],s:[.13,5.6,.12]})));
-      batch(warehouse,boxGeometry,'Haze',[-11,-8,-5,-2,1,4,7].map(x=>({p:[x,.157,4.2],s:[1.7,.008,.035]})));
+      const ground=box(warehouse,'Chalk',[-105,-.52,0],[345,1,500]);ground.castShadow=false;
+      // Continuous ground, not a raised display plinth. The only edge is the distant shoreline.
+      // Solid transverse dock wall: its opening and the truck rear share the z=0 axis.
+      batch(warehouse,boxGeometry,'Haze',[-4.4,4.4].map(z=>({p:[-6.55,2.8,z],s:[.42,5.6,4.2]})),'WarehouseWallPanels');
+      box(warehouse,'Haze',[-6.55,5.1,0],[.42,1,4.6]);
+      batch(warehouse,boxGeometry,'Asphalt',[-2.3,2.3].map(z=>({p:[-6.79,2.3,z],s:[.18,4.6,.18]})),'BayPosts');
+      box(warehouse,'Asphalt',[-6.79,4.6,0],[.18,.18,4.78]);
+      batch(warehouse,boxGeometry,'Haze',[-5,0,5].map(z=>({p:[-9.8,5.75,z],s:[6.5,.45,.35]})),'WarehouseRoofBeams');
+      batch(warehouse,boxGeometry,'Haze',[-5].map(z=>({p:[-13,2.8,z],s:[.28,5.6,.28]})),'WarehouseColumns');
+      batch(warehouse,boxGeometry,'Haze',[-11,-8,-5,-2,1,4,7].map(x=>({p:[x,-.012,4.2],s:[1.7,.008,.035]})));
       const truck=group('Truck');
-      box(truck,'Asphalt',[1.1,.82,0],[14.4,.4,2.06]);box(truck,'Graphite',[7.45,1.8,0],[2.65,2.3,2.45]);
-      box(truck,'Graphite',[8.3,1.15,0],[1.35,.9,2.55]);box(truck,'Asphalt',[8.81,2.16,0],[.025,.8,2.1]);
-      box(truck,'Asphalt',[7.6,2.25,1.24],[1.6,.85,.025]);box(truck,'Asphalt',[7.6,2.25,-1.24],[1.6,.85,.025]);
+      contactShadow(truck,[1,.008,0],[8,.004,1.55],.25);
+      for(const x of [-4.6,-2.9,7.4])for(const z of [-1.4,1.4])contactShadow(truck,[x,.013,z],[.9,.005,.57],.64);
+      box(truck,'Graphite',[1.1,1.02,0],[14.4,.32,2.06]);mesh(truck,roundedBoxGeometry,'Graphite',[7.45,1.8,0],[2.65,2.3,2.45]);
+      box(truck,'Graphite',[8.3,1.15,0],[1.35,.9,2.55]);box(truck,'Asphalt',[8.8,2.3,0],[.045,.85,2.15]);
+      box(truck,'Haze',[8.83,1.86,0],[.04,.045,2.18]);
+      for(const z of [-1.25,1.25]){
+        box(truck,'Asphalt',[7.55,2.33,z],[1.96,.8,.035]);
+        box(truck,'Haze',[7.55,1.91,z],[1.96,.04,.04]);
+        box(truck,'Graphite',[7.25,2.33,z*1.015],[.07,.8,.045]);
+        box(truck,'Haze',[6.9,1.65,z],[.24,.055,.04]);
+      }
       box(truck,'Haze',[8.99,1.05,0],[.13,.18,2.35]);box(truck,'Asphalt',[9.07,1.4,0],[.025,.3,1]);
       batch(truck,boxGeometry,'Haze',[-.88,.88].map(z=>({p:[9.03,1.44,z],s:[.03,.18,.35]})));
       batch(truck,boxGeometry,'Graphite',[-1.43,1.43].map(z=>({p:[7.9,2.5,z],s:[.25,.4,.17]})));
-      wheels(truck,[-4.6,-2.9,7.4].flatMap(x=>[-1.18,1.18].map(z=>[x,.57,z])),.57,.35);
+      wheels(truck,[-4.6,-2.9,7.4].flatMap(x=>[-1.4,1.4].map(z=>[x,.76,z])),.76,.42,.30);
       const container=group('Container',truck);container.position.y=1.14;
       box(container,'Signal',[0,.10,0],[12.2,.2,2.4]);box(container,'Signal',[0,2.55,0],[12.2,.12,2.4]);
       box(container,'Signal',[0,1.32,-1.17],[12.2,2.5,.07]);box(container,'Signal',[0,1.32,1.17],[12.2,2.5,.07]);box(container,'Signal',[6.05,1.32,0],[.1,2.5,2.4]);
-      batch(container,boxGeometry,'Signal',[-5.95,5.95].flatMap(x=>[-1.18,1.18].map(z=>({p:[x,1.3,z],s:[.16,2.6,.16]}))));
-      batch(container,boxGeometry,'Signal',Array.from({length:20},(_,i)=>({p:[-5.5+(i%10)*1.22,1.32,i<10?-1.23:1.23],s:[.08,2.4,.08]})));
+      batch(container,boxGeometry,'Signal',[-6,6].flatMap(x=>[-1.19,1.19].map(z=>({p:[x,1.3,z],s:[.22,2.64,.22]}))),'ContainerCornerPosts');
+      batch(container,boxGeometry,'Signal',Array.from({length:20},(_,i)=>({p:[-5.3+(i%10)*1.1778,1.32,i<10?-1.25:1.25],s:[.13,2.38,.16]})),'ContainerRibs');
       const left=group('DoorLeft',container);left.position.set(-6.1,.15,1.2);
       box(left,'Signal',[0,1.16,-.6],[.12,2.32,1.2]);
       const right=group('DoorRight',container);right.position.set(-6.1,.15,-1.2);
@@ -212,6 +244,7 @@
         batch(g,boxGeometry,'Signal',[.2,.45,.7,.95].map(z=>({p:[-.07,1.16,sign*z],s:[.05,2.25,.04]})));
       }
       const pallet=group('Pallet');
+      const palletContact=group('PalletContact');contactShadow(palletContact,[0,0,0],[.94,.004,.66],.42);
       batch(pallet,boxGeometry,'Graphite',[-.47,0,.47].map(x=>({p:[x,.06,0],s:[.12,.12,.8]})));
       batch(pallet,boxGeometry,'Graphite',Array.from({length:5},(_,i)=>({p:[0,.14,-.34+i*.17],s:[1.2,.05,.13]})));
       batch(pallet,boxGeometry,'Graphite',[-.47,0,.47].map(x=>({p:[x,.015,0],s:[.15,.03,.8]})));
@@ -220,12 +253,16 @@
         const n=cartonPositions.length+1,position=[(x-1)*.4,.305+l*.25,(z-.5)*.4];cartonPositions.push(position);
         const anchor=group('Carton_'+String(n).padStart(2,'0'),pallet);anchor.position.set(...position);anchor.userData.instanceId=n-1;anchor.userData.component='Carton';
       }
-      batch(pallet,boxGeometry,'Haze',cartonPositions.map(p=>({p,s:[.39,.24,.39]})),'Carton');
+      batch(pallet,roundedBoxGeometry,'Haze',cartonPositions.map(p=>({p,s:[.39,.24,.39]})),'Carton');
       batch(pallet,boxGeometry,'Asphalt',cartonPositions.map(p=>({p:[p[0],p[1]+.122,p[2]],s:[.045,.005,.29]})));
       batch(pallet,boxGeometry,'Chalk',cartonPositions.map(p=>({p:[p[0],p[1],p[2]+.197],s:[.18,.08,.004]})));
-      const beam=group('ScanBeam');box(beam,'Signal',[0,0,0],[1.23,.018,.018]);
+      const beam=group('ScanBeam'),beamGeometry=boxGeometry.clone();
+      beamGeometry.setAttribute('aScanner',new T.Float32BufferAttribute(new Float32Array(beamGeometry.attributes.position.count).fill(1),1));
+      const beamStrip=mesh(beam,beamGeometry,'Signal',[0,0,0],[1.25,.045,.035]);beamStrip.castShadow=false;beamStrip.receiveShadow=false;
       const forklift=group('Forklift');
-      box(forklift,'Gulf',[-.1,.61,0],[1.9,.67,1.02]);box(forklift,'Gulf',[-.85,.88,0],[.5,.7,1.08]);box(forklift,'Graphite',[.1,.9,0],[.65,.15,.8]);
+      contactShadow(forklift,[0,-.008,0],[1.4,.004,.79],.45);
+      for(const x of [-.65,.65])for(const z of [-.55,.55])contactShadow(forklift,[x,-.004,z],[.4,.005,.28],.62);
+      mesh(forklift,roundedBoxGeometry,'Gulf',[-.1,.61,0],[1.9,.67,1.02]);mesh(forklift,roundedBoxGeometry,'Gulf',[-.85,.88,0],[.5,.7,1.08]);box(forklift,'Graphite',[.1,.9,0],[.65,.15,.8]);
       box(forklift,'Asphalt',[-.15,1.12,0],[.47,.18,.52]);box(forklift,'Asphalt',[-.42,1.35,0],[.13,.5,.52]);
       batch(forklift,boxGeometry,'Graphite',[-.8,.7].flatMap(x=>[-.48,.48].map(z=>({p:[x,1.55,z],s:[.07,1.5,.07]}))));box(forklift,'Graphite',[-.05,2.3,0],[1.8,.09,1.13]);
       batch(forklift,boxGeometry,'Asphalt',[-.43,.43].map(z=>({p:[1.03,1.25,z],s:[.13,2.4,.13]})));
@@ -234,7 +271,7 @@
       batch(forks,boxGeometry,'Graphite',[-.3,.3].map(z=>({p:[1.7,0,z],s:[1.3,.07,.12]})));
       wheels(forklift,[-.65,.65].flatMap(x=>[-.55,.55].map(z=>[x,.32,z])),.32,.22);
       const road=group('Road');
-      curve=new T.CatmullRomCurve3([new T.Vector3(-18,0,0),new T.Vector3(0,0,0),new T.Vector3(15,0,0),new T.Vector3(30,0,8),new T.Vector3(43,0,-5),new T.Vector3(57,0,-7),new T.Vector3(72,0,0)]);
+      curve=new T.CatmullRomCurve3([new T.Vector3(-6.2,0,0),new T.Vector3(0,0,0),new T.Vector3(15,0,0),new T.Vector3(30,0,8),new T.Vector3(43,0,-5),new T.Vector3(57,0,-7),new T.Vector3(72,0,0)]);
       const roadEdgeA=[],roadEdgeB=[];for(let i=0;i<=120;i++){const t=i/120,c=curve.getPoint(t),v=curve.getTangent(t),n=new T.Vector3(-v.z,0,v.x).normalize();roadEdgeA.push([c.x+n.x*4.6,c.z+n.z*4.6]);roadEdgeB.unshift([c.x-n.x*4.6,c.z-n.z*4.6])}
       extrude(road,'Asphalt',roadEdgeA.concat(roadEdgeB),.09,[0,0,0],[Math.PI/2,0,0],0);
       const dashes=group('RoadDashes',road),dashTransforms=[];
@@ -244,6 +281,7 @@
       const streakTransforms=Array.from({length:65},(_,i)=>({p:[70+(i*17%120),-.475,-55+(i*23%110)],s:[.3+(i%5)*.2,.006,.025],r:[0,-.3,0]}));
       seaStreaks=batch(sea,boxGeometry,'Haze',streakTransforms);seaStreaks.castShadow=false;seaStreaks.receiveShadow=false;seaStreaks.userData.base=streakTransforms;
       const ship=group('Ship');
+      contactShadow(ship,[.5,-.48,0],[14.5,.004,3.8],.35);
       extrude(ship,'Graphite',[[-13,-3.4],[9.5,-3.4],[14,-1.2],[15,0],[14,1.2],[9.5,3.4],[-13,3.4]],1.5,[0,1.05,0]);
       extrude(ship,'Asphalt',[[-12.7,-3.15],[9.3,-3.15],[13.8,-1],[14.6,0],[13.8,1],[9.3,3.15],[-12.7,3.15]],.12,[0,1.13,0],undefined,.025);
       box(ship,'Haze',[-10,2.15,0],[3.3,2,5.2]);box(ship,'Chalk',[-10,3.35,0],[3.2,.6,5.4]);box(ship,'Asphalt',[-8.38,3.4,0],[.035,.3,4.9]);box(ship,'Asphalt',[-10,3.4,2.72],[2.8,.3,.025]);box(ship,'Chalk',[-10,4,0],[2.5,.7,3.6]);box(ship,'Graphite',[-11,4.9,0],[1,1.2,1.2]);
@@ -257,9 +295,20 @@
         const ribs=[];transforms.forEach(t=>{for(let n=0;n<7;n++)for(const side of [-1,1])ribs.push({p:[t.p[0]-1.8+n*.6,t.p[1],t.p[2]+side*1.005],s:[.045,1.35,.045]})});batch(stacks,boxGeometry,c,ribs);
       }
       const wake=group('Wake',ship);
-      extrude(wake,'Haze',[[-13,-3],[-25,-5.6],[-21,-3.8],[-13,-2.8]],.008,[0,-.44,0],undefined,0);
-      extrude(wake,'Haze',[[-13,3],[-25,5.6],[-21,3.8],[-13,2.8]],.008,[0,-.44,0],undefined,0);
-      batch(wake,boxGeometry,'Haze',Array.from({length:12},(_,i)=>({p:[-14-i*.9,-.435,((i*7)%5-2)*.65],s:[1.3-i*.05,.008,.035]})));
+      for(const side of [-1,1]){
+        const strip=extrude(wake,'Haze',[[-13,side*3.23],[-23,side*4.1],[-22.9,side*4.12],[-13,side*3.43]],.003,[0,-.477,0],undefined,0);
+        strip.geometry.setAttribute('aWake',new T.Float32BufferAttribute(new Float32Array(strip.geometry.attributes.position.count).fill(1),1));
+        strip.castShadow=false;strip.receiveShadow=false;strip.renderOrder=3;
+        strip.onBeforeRender=()=>{materials.Haze.depthWrite=false};strip.onAfterRender=()=>{materials.Haze.depthWrite=true};
+      }
+      materials.Haze.transparent=true;
+      materials.Haze.onBeforeCompile=shader=>{
+        shader.vertexShader='attribute float aWake; varying float vWake; varying float vWakeFade;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvWake=aWake;vWakeFade=smoothstep(-23.0,-14.0,position.x);');
+        shader.fragmentShader='varying float vWake; varying float vWakeFade;\n'+shader.fragmentShader;
+        shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(vWake>0.5){gl_FragColor.rgb=vec3(213.0,221.0,226.0)/255.0;gl_FragColor.a*=vWakeFade*.9;}');
+      };
+      materials.Haze.customProgramCacheKey=()=> 'haze-wake-fade-v1';
       const plane=group('Plane');
       // Rounded fuselage and wings are extruded outlines; the scene imports no models.
       const fuselage=[[-8,-.3],[-6.5,-.67],[5.9,-.67],[7.4,-.45],[8.25,0],[7.4,.45],[5.9,.67],[-6.5,.67],[-8,.3]];
@@ -273,9 +322,7 @@
       batch(plane,cylinderGeometry,'Asphalt',[-3.1,3.1].map(z=>({p:[1.22,-.55,z],s:[.4,.025,.4],r:[0,0,Math.PI/2]})));
       box(plane,'Asphalt',[6.75,.62,0],[.8,.08,.85],[0,0,-.15]);
       batch(plane,boxGeometry,'Asphalt',Array.from({length:24},(_,i)=>({p:[-4.9+(i%12)*.86,.21,i<12?-.76:.76],s:[.12,.16,.012]})));
-      const shadow=group('PlaneShadow'),shadowGeometry=cylinderGeometry.clone();
-      shadowGeometry.setAttribute('aSoftShadow',new T.Float32BufferAttribute(new Float32Array(shadowGeometry.attributes.position.count).fill(1),1));
-      const shadowDisc=mesh(shadow,shadowGeometry,'Asphalt',[0,0,0],[7.8,.008,2.4]);shadowDisc.castShadow=false;shadowDisc.receiveShadow=false;
+      const shadow=group('PlaneShadow');contactShadow(shadow,[0,0,0],[7.8,.008,2.4],.3);
       // The same Asphalt material gives the ellipse a soft edge via a geometry attribute.
       // Other Asphalt geometry has the default zero attribute and remains fully opaque.
       materials.Asphalt.transparent=true;
@@ -283,9 +330,21 @@
         shader.vertexShader='attribute float aSoftShadow; varying float vSoftShadow; varying vec3 vShadowPosition;\n'+shader.vertexShader;
         shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSoftShadow=aSoftShadow; vShadowPosition=position;');
         shader.fragmentShader='varying float vSoftShadow; varying vec3 vShadowPosition;\n'+shader.fragmentShader;
-        shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(vSoftShadow>0.5){gl_FragColor.a*=0.30*(1.0-smoothstep(0.15,1.0,length(vShadowPosition.xz)));}');
+        shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(vSoftShadow>0.0){gl_FragColor.a*=vSoftShadow*(1.0-smoothstep(0.05,1.0,length(vShadowPosition.xz)));}');
       };
-      materials.Asphalt.customProgramCacheKey=()=> 'shared-asphalt-soft-shadow-v1';
+      materials.Asphalt.customProgramCacheKey=()=> 'shared-asphalt-soft-shadow-v2';
+      // Fine, deterministic surface finish in the shader. No texture images or extra materials.
+      for(const [name,material] of Object.entries(materials)){
+        const compile=material.onBeforeCompile,cache=material.customProgramCacheKey();
+        material.onBeforeCompile=shader=>{
+          compile.call(material,shader);
+          shader.vertexShader='varying vec3 vSurfacePoint;\n'+shader.vertexShader;
+          shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvec4 surfacePoint=vec4(position,1.0);\n#ifdef USE_INSTANCING\nsurfacePoint=instanceMatrix*surfacePoint;\n#endif\nvSurfacePoint=(modelMatrix*surfacePoint).xyz;');
+          shader.fragmentShader='varying vec3 vSurfacePoint;\n'+shader.fragmentShader;
+          shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\nfloat surfaceGrain=fract(sin(dot(floor(vSurfacePoint*95.0),vec3(12.9898,78.233,37.719)))*43758.5453);diffuseColor.rgb*=mix(.978,1.012,surfaceGrain);');
+        };
+        material.customProgramCacheKey=()=>cache+'-matte-finish-v1-'+name;
+      }
       shadow.scale.setScalar(.9);
       objects.Wheel=wheelBatches[0];objects.Wheel.name='Wheel';
       // Store a pristine pose once. setProgress restores it before applying analytic transforms.
@@ -301,43 +360,45 @@
       progress=p;const seaTone=updateCopy(p);if(!ready)return;
       const T=THREE,o=objects;
       for(const b of baseline){b.o.position.copy(b.position);b.o.quaternion.copy(b.quaternion);b.o.scale.copy(b.scale);b.o.visible=b.visible}
-      const roadT=mix(.198,.88,range(p,.30,.64)), truckPosition=curve.getPoint(roadT),tangent=curve.getTangent(roadT);
+      const roadT=mix(1/6,.88,range(p,.30,.64)), truckPosition=curve.getPoint(roadT),tangent=curve.getTangent(roadT);
       // Keep the truck stationary and aligned with the bay until departure.
-      if(p<=.30)o.Truck.position.set(0,0,0);else o.Truck.position.copy(truckPosition).sub(curve.getPoint(.198));
+      if(p<=.30)o.Truck.position.set(0,0,0);else o.Truck.position.copy(truckPosition);
       o.Truck.rotation.y=p<=.30?0:-Math.atan2(tangent.z,tangent.x);
-      const doorClose=range(p,.23,.27);o.DoorLeft.rotation.y=mix(-Math.PI*.83,0,doorClose);o.DoorRight.rotation.y=mix(Math.PI*.83,0,doorClose);
+      const doorClose=range(p,.23,.27);o.DoorLeft.rotation.y=mix(Math.PI,0,doorClose);o.DoorRight.rotation.y=mix(-Math.PI,0,doorClose);
       const lift=range(p,.035,.105),insert=range(p,.105,.18),withdraw=range(p,.185,.235),park=range(p,.235,.30);
       const forkliftX=mix(-10.55,-7.15,insert)-withdraw*3.4;
       o.Forklift.position.set(forkliftX,.02,park*3.3);o.Forklift.rotation.y=-park*Math.PI*.22;
-      o.Forks.position.y=mix(.17,1.30,lift)*(1-range(p,.21,.265)*.87);
+      o.Forks.position.y=mix(.065,1.30,lift)*(1-range(p,.21,.265)*.87);
       const closed=p>=.27;
       if(closed){if(o.Pallet.parent!==o.Container)o.Container.add(o.Pallet);o.Pallet.position.set(-5.1,.2,0)}
-      else{if(o.Pallet.parent!==world)world.add(o.Pallet);o.Pallet.position.set(mix(-8.5,-5.1,insert),mix(.18,1.34,lift),0)}
+      else{if(o.Pallet.parent!==world)world.add(o.Pallet);o.Pallet.position.set(mix(-8.5,-5.1,insert),mix(.075,1.34,lift),0)}
       o.Pallet.rotation.set(0,0,0);o.Pallet.scale.set(1,1,1);
-      o.ScanBeam.position.set(o.Pallet.position.x,.45+range(p,0,.09)*.82,.408);o.ScanBeam.visible=p<.105;
+      o.PalletContact.position.set(mix(-8.5,-5.1,insert),.018,0);o.PalletContact.scale.setScalar(1+lift*.25);o.PalletContact.visible=p<.11;
+      o.ScanBeam.position.set(o.Pallet.position.x,.68+range(p,0,.09)*.56,.416);o.ScanBeam.visible=p<.105;
       o.Ship.position.set(mix(86,104,range(p,.56,1)),0,mix(8,12,range(p,.56,1))+range(p,.82,1)*24);o.Ship.rotation.y=-.22-range(p,.82,1)*.7;
       const flight=range(p,.80,1);o.Plane.position.set(mix(79,118,flight),mix(9,14,flight),mix(21,-9,flight));o.Plane.rotation.set(0,.42,mix(.06,0,flight));
       o.PlaneShadow.position.set(o.Plane.position.x+4,-.465,o.Plane.position.z-2);o.PlaneShadow.rotation.y=o.Plane.rotation.y;
       // Camera poses blend continuously in the same world: dock → road → sea → sky.
-      const cameraTarget=new T.Vector3(-2.2,1.1,0);
+      const cameraTarget=new T.Vector3(-8.4,1.2,0).lerp(new T.Vector3(-2.2,1.1,0),range(p,.10,.25));
       const roadFollow=range(p,.28,.43);cameraTarget.lerp(new T.Vector3(o.Truck.position.x+1,1.5,o.Truck.position.z),roadFollow);
       const seaFollow=range(p,.555,.72);cameraTarget.lerp(new T.Vector3(o.Ship.position.x,0,o.Ship.position.z),seaFollow);
       const airFollow=range(p,.815,.97);cameraTarget.lerp(o.Plane.position,airFollow);
-      const opening=new T.Vector3(-22,16,28), loading=new T.Vector3(-24,21,29),chase=new T.Vector3(4,22,36),overSea=new T.Vector3(-7,53,20),airView=new T.Vector3(4,31,34);
+      const opening=new T.Vector3(-7,3.7,13), loading=new T.Vector3(-24,21,29),chase=new T.Vector3(4,22,36),overSea=new T.Vector3(-7,53,20),airView=new T.Vector3(4,31,34);
       let offset=opening.clone().lerp(loading,range(p,.05,.25));offset.lerp(chase,range(p,.29,.49));offset.lerp(overSea,range(p,.55,.74));offset.lerp(airView,range(p,.82,1));
       const portrait=viewport.width<900;
-      let height=mix(27.8,26.7,range(p,0,.07));height=mix(height,29,range(p,.10,.25));height=mix(height,30,range(p,.29,.50));height=mix(height,41,range(p,.56,.75));height=mix(height,32,range(p,.84,1));
+      let height=mix(10.5,9.8,range(p,0,.04));height=mix(height,29,range(p,.05,.25));height=mix(height,30,range(p,.29,.50));height=mix(height,41,range(p,.56,.75));height=mix(height,32,range(p,.84,1));
       if(portrait)height*=Math.max(1.45,.95/(viewport.width/viewport.height));
       const aspect=viewport.width/viewport.height;
-      camera.left=-height*aspect/2;camera.right=height*aspect/2;camera.top=height/2;camera.bottom=-height/2;
+      camera.aspect=aspect;camera.fov=T.MathUtils.radToDeg(2*Math.atan(height/(2*offset.length())));
       camera.position.copy(cameraTarget).add(offset);camera.lookAt(cameraTarget);camera.updateMatrix();
-      const right=new T.Vector3().setFromMatrixColumn(camera.matrix,0),up=new T.Vector3().setFromMatrixColumn(camera.matrix,1);
-      const shift=portrait?up.multiplyScalar(-height*.205):right.multiplyScalar(-height*aspect*.225);
-      camera.position.add(shift);cameraTarget.add(shift);camera.lookAt(cameraTarget);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+      const lightingTarget=cameraTarget.clone();
+      // Off-axis framing keeps the physical low three-quarter camera angle intact.
+      camera.setViewOffset(viewport.width,viewport.height,portrait?0:-viewport.width*.225,portrait?viewport.height*.205:0,viewport.width,viewport.height);
+      camera.updateProjectionMatrix();camera.updateMatrixWorld();
       scene.background.set(colorMix(colors.Chalk,colors.Gulf,seaTone));
-      o.Sun.position.copy(cameraTarget).add(new T.Vector3(-22,32,20));o.Sun.target.position.copy(cameraTarget);o.Fill.children[0].intensity=mix(1.2,1.5,seaTone);
+      o.Sun.position.copy(lightingTarget).add(new T.Vector3(-22,32,20));o.Sun.target.position.copy(lightingTarget);o.Fill.children[0].intensity=mix(1.45,1.5,seaTone);o.Fill.children[0].groundColor.set(colorMix(colors.Haze,'#8998a5',seaTone));
       o.Warehouse.visible=p<.70;o.Forklift.visible=p<.45;o.Truck.visible=p<.72;o.Road.visible=p<.76;
-      o.Ship.visible=p>.53;o.Wake.visible=p>.53;o.Plane.visible=p>.78;o.PlaneShadow.visible=p>.78;
+      o.Sea.visible=p>.50;o.Ship.visible=p>.53;o.Wake.visible=p>.53;o.Plane.visible=p>.78;o.PlaneShadow.visible=p>.78;
       // Native frustum culling handles individual meshes; whole groups are culled only off screen.
       world.updateMatrixWorld(true);
       if(debugMode){$('debug').dataset.materials=stats.materials;$('debug').dataset.triangles=stats.triangles}
@@ -375,6 +436,7 @@
     if(new URLSearchParams(location.search).has('test'))runSceneChecks();
     const previewMoment=new URLSearchParams(location.search).get('p');
     if(debugMode&&previewMoment!==null){manual=true;target=clamp(Number(previewMoment)||0);setProgress(target)}
+    if(reviewMode){$('debug').hidden=true;document.fonts.ready.then(()=>{setProgress(target);if(ready)renderer.render(scene,camera);document.body.dataset.reviewReady=target.toFixed(2);if(parent!==window)parent.postMessage({type:'journey-review-ready',progress:target.toFixed(2)},location.origin)})}
     function runSceneChecks(){
       const report={ready,checks:[]},check=(name,pass,detail='')=>report.checks.push({name,pass:!!pass,detail});
       if(ready){
@@ -387,6 +449,21 @@
         check('Exactly 24 ship container instances',['Signal','Gulf','Asphalt','Haze'].reduce((n,c)=>n+world.getObjectByName('ContainerBlock_'+c).count,0)===24);
         check('Pixel ratio capped',renderer.getPixelRatio()<=2);check('Instanced repeated parts',stats.instances>200,stats.instances);
         check('No textures',Object.values(materials).every(m=>!m.map&&m.roughness===1&&m.metalness===0));
+        check('Exact Signal sRGB hex',materials.Signal.color.getHexString(THREE.SRGBColorSpace)==='ff5b1f',materials.Signal.color.getHexString(THREE.SRGBColorSpace));
+        check('sRGB output without tone mapping',renderer.outputColorSpace===THREE.SRGBColorSpace&&renderer.toneMapping===THREE.NoToneMapping);
+        check('Four container corner posts',world.getObjectByName('ContainerCornerPosts').count===4);
+        check('Ten ribs on each container side',world.getObjectByName('ContainerRibs').count===20);
+        check('Three straight roof beams',world.getObjectByName('WarehouseRoofBeams').count===3);
+        check('Wake has exactly two Haze strips',objects.Wake.children.length===2&&objects.Wake.children.every(o=>o.material===materials.Haze&&!o.castShadow&&!o.receiveShadow));
+        check('Cutouts hidden for review',document.querySelector('.cutouts').hidden);
+        check('Soft contact shadows on required subjects',[objects.Forklift,objects.Truck,objects.PalletContact,objects.Ship].every(g=>g.children.some(o=>o.userData.contactShadow)));
+        setProgress(0);check('Rear doors fully open at zero',Math.abs(objects.DoorLeft.rotation.y)===Math.PI&&Math.abs(objects.DoorRight.rotation.y)===Math.PI);
+        check('Scanner visible at zero',objects.ScanBeam.visible&&objects.ScanBeam.children[0].geometry.hasAttribute('aScanner'));
+        for(const p of [.31,.42,.5,.59,.64]){
+          setProgress(p);const t=mix(1/6,.88,range(p,.30,.64)),position=curve.getPoint(t),direction=curve.getTangent(t).normalize();
+          const forward=new THREE.Vector3(1,0,0).applyQuaternion(objects.Truck.quaternion);
+          check('Truck follows road tangent at '+p,objects.Truck.position.distanceTo(position)<1e-8&&forward.dot(direction)>.999999);
+        }
         for(const p of [0,.1,.23,.25,.27,.3,.5,.6,.75,1]){setProgress(p);const first=window.journeyScene.snapshot();setProgress(1-p);setProgress(p);check('Deterministic at '+p,first===window.journeyScene.snapshot())}
         setProgress(.27);check('Pallet parented to Container',objects.Pallet.parent===objects.Container);
         const before=objects.Pallet.getWorldPosition(new THREE.Vector3());setProgress(.269999);const after=objects.Pallet.getWorldPosition(new THREE.Vector3());check('Continuous pallet reparent',before.distanceTo(after)<.001,before.distanceTo(after));
@@ -405,7 +482,7 @@
         if(!manual&&Math.abs(target-progress)>.000001){const next=reduced?target:mix(progress,target,1-Math.exp(-dt*7));setProgress(Math.abs(next-target)<.00001?target:next)}
         if(ready&&!failed){
           // Only water shimmer depends on wall-clock time. Nothing else has an idle loop.
-          if(!reduced&&objects.Ship.visible){const dummy=new THREE.Object3D();seaStreaks.userData.base.forEach((v,i)=>{dummy.position.set(v.p[0]+Math.sin(time*.00025+i)*.25,v.p[1],v.p[2]);dummy.rotation.set(...v.r);dummy.scale.set(v.s[0]*(.8+.2*Math.sin(time*.0005+i)),v.s[1],v.s[2]);dummy.updateMatrix();seaStreaks.setMatrixAt(i,dummy.matrix)});seaStreaks.instanceMatrix.needsUpdate=true}
+          if(!reduced&&!reviewMode&&objects.Ship.visible){const dummy=new THREE.Object3D();seaStreaks.userData.base.forEach((v,i)=>{dummy.position.set(v.p[0]+Math.sin(time*.00025+i)*.25,v.p[1],v.p[2]);dummy.rotation.set(...v.r);dummy.scale.set(v.s[0]*(.8+.2*Math.sin(time*.0005+i)),v.s[1],v.s[2]);dummy.updateMatrix();seaStreaks.setMatrixAt(i,dummy.matrix)});seaStreaks.instanceMatrix.needsUpdate=true}
           renderer.render(scene,camera);
         }
         fpsFrames++;if(!fpsTime)fpsTime=time;if(time-fpsTime>650){$('fps').textContent=Math.round(fpsFrames*1000/(time-fpsTime))+' FPS';fpsTime=time;fpsFrames=0}
