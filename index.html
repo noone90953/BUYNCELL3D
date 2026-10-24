@@ -30,6 +30,9 @@
     .cutout:nth-child(n){top:58%;right:5%;width:14%;max-width:90px;min-width:60px}
     @media(max-width:899px){.copy{top:55%}.copy-scrim{background:linear-gradient(0deg,var(--paper) 0%,var(--paper) 45%,transparent 57%)}.journey-footer{bottom:max(85px,calc(env(safe-area-inset-bottom) + 65px))}.cutout:nth-child(n){top:54%;right:3%;width:15%;max-width:65px;min-width:45px}.debug{bottom:29px}.topbar .enquire{font-size:0}.topbar .enquire:before{content:'Enquire';font-size:10px}.topbar .enquire .arrow{font-size:17px}}
     @media(max-width:899px) and (max-height:730px){.copy{top:51%}.copy h1{font-size:30px}.copy .description{line-height:1.5}.journey-footer{bottom:72px}.subject-note{display:none}}
+    .chapters{grid-template-columns:repeat(6,1fr)}.chapter:nth-child(5){justify-self:center}.rail-stop{position:absolute;top:-1.5px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor;opacity:.4}.rail-fill{z-index:1}
+    .globe-labels{position:absolute;inset:0;z-index:2;pointer-events:none;clip-path:inset(12% 0 18% 45%)}.globe-labels svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.globe-labels line{stroke:var(--haze);stroke-width:.65;opacity:.5}.destination-label{position:absolute;white-space:nowrap;font-size:10px;font-weight:500;line-height:16px;color:var(--chalk);text-shadow:0 1px 4px var(--asphalt),0 0 7px var(--asphalt);padding:1px 3px}.destination-label.hub{font-weight:700}.destination-label.hub:before{content:'↗ ';color:var(--signal)}
+    @media(max-width:899px){.globe-labels{clip-path:inset(12% 0 46% 0)}.destination-label{font-size:8px;line-height:13px;padding:1px 2px}.topbar .enquire:before{content:'Quote'}.chapter{font-size:7px}.chapter:nth-child(5){justify-self:center}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.cutout{will-change:auto}}
   </style>
   <script>
@@ -42,21 +45,23 @@
     };
   </script>
   <script defer src="./vendor/three.min.js"></script>
+  <script defer src="./assets/data/land-mask.js"></script>
 </head>
 <body>
   <a class="skip" href="#enquiry" data-enquiry>Skip to enquiry</a>
-  <main id="journey" aria-label="From Dubai to your world: a five-part shipping journey">
+  <main id="journey" aria-label="From Dubai to your world: a six-part shipping journey">
     <section class="stage" aria-label="Interactive export journey">
       <div class="scene-backdrop" aria-hidden="true"><canvas id="scene"></canvas><img class="poster" src="./assets/poster.svg" alt=""></div>
       <div class="copy-scrim" aria-hidden="true"></div>
       <header class="topbar">
         <a href="#warehouse" class="brand" data-moment="0" aria-label="BUY and CELL, back to warehouse"><svg viewBox="0 0 32 37" fill="none" aria-hidden="true"><path d="M10 2H28V28H10V2Z" stroke="currentColor" stroke-width="2.3"/><path d="M4 9H22V35H4V9Z" fill="var(--paper)" stroke="currentColor" stroke-width="2.3"/><path d="M9 15H17M10 29H16" stroke="currentColor" stroke-width="2"/></svg><span class="brand-word">BUY<span>&</span>CELL</span></a>
-        <nav class="topnav" aria-label="Main navigation"><a href="#warehouse" data-moment="0">The journey</a><a href="#sea" data-moment=".75">By sea</a><a href="#air" data-moment="1">By air</a></nav>
-        <button class="enquire" data-enquiry aria-label="Start an enquiry">Start <span class="desktop-word">an enquiry</span><span class="arrow" aria-hidden="true">↗</span></button>
+        <nav class="topnav" aria-label="Main navigation"><a href="#warehouse" data-moment="0">The journey</a><a href="#sea" data-moment=".6">By sea</a><a href="#air" data-moment=".8">By air</a></nav>
+        <button class="enquire" data-moment="1" aria-label="Go to World to request a quote">Get <span class="desktop-word">a quote</span><span class="arrow" aria-hidden="true">↗</span></button>
       </header>
       <div class="top-rule" aria-hidden="true"></div>
       <div class="scene-label" aria-hidden="true"><strong id="scene-caption">A good journey starts here</strong><span id="scene-code">DXB / 01</span></div>
       <div class="scene-index" id="scene-index" aria-hidden="true">01</div>
+      <div class="globe-labels" id="globe-labels" aria-hidden="true" hidden><svg id="globe-leaders" aria-hidden="true"></svg></div>
       <!-- Keep hidden during 3D review. Remove hidden only after the scene is approved. -->
       <div class="cutouts" aria-hidden="true" hidden>
         <figure class="cutout" data-key="0"><img src="./assets/cutouts/warehouse.webp" alt="" width="320" height="400"><figcaption>The cargo. Possibilities inside.</figcaption></figure>
@@ -66,7 +71,7 @@
         <figure class="cutout" data-key="1"><img src="./assets/cutouts/air.webp" alt="" width="320" height="400"><figcaption>A world of opportunity.</figcaption></figure>
       </div>
       <article class="copy" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow"><span class="chapter-number" id="chapter-number">01 / 05</span><span id="chapter-title">The beginning · Dubai, UAE</span></p>
+        <p class="eyebrow"><span class="chapter-number" id="chapter-number">01 / 06</span><span id="chapter-title">The beginning · Dubai, UAE</span></p>
         <h1 id="headline">From Dubai.<br> To your<br> <span class="soft">world.</span></h1>
         <p class="description" id="description">Mobile phones. Global possibilities. Follow the journey from our warehouse to your next opportunity.</p>
         <button class="copy-action" id="copy-action">Follow the journey <span class="arrow" aria-hidden="true">↓</span></button>
@@ -76,13 +81,14 @@
       <p class="fallback-note" role="status">Still view · Scroll to follow the journey</p>
       <footer class="journey-footer">
         <div class="footer-top"><span class="route-label">Dubai, UAE <svg viewBox="0 0 49 8" fill="none" aria-hidden="true"><path d="M0 4h47m-4-3 4 3-4 3" stroke="currentColor"/></svg> Your world</span><span class="scroll-hint"><span class="mouse" aria-hidden="true"></span><span id="scroll-hint">Scroll to follow the cargo</span></span></div>
-        <div class="rail" aria-hidden="true"><div class="rail-fill" id="rail-fill"></div></div>
+        <div class="rail" aria-hidden="true"><span class="rail-stop" style="left:0%"></span><span class="rail-stop" style="left:20%"></span><span class="rail-stop" style="left:40%"></span><span class="rail-stop" style="left:60%"></span><span class="rail-stop" style="left:80%"></span><span class="rail-stop" style="left:100%"></span><div class="rail-fill" id="rail-fill"></div></div>
         <nav class="chapters" aria-label="Journey chapters">
           <button class="chapter" data-moment="0" aria-current="step"><span class="num">01</span><span class="label">Warehouse</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
-          <button class="chapter" data-moment=".25"><span class="num">02</span><span class="label">Loading</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
-          <button class="chapter" data-moment=".5"><span class="num">03</span><span class="label">Road</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
-          <button class="chapter" data-moment=".75"><span class="num">04</span><span class="label">Sea</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
-          <button class="chapter" data-moment="1"><span class="num">05</span><span class="label">Air</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".2"><span class="num">02</span><span class="label">Loading</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".4"><span class="num">03</span><span class="label">Road</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".6"><span class="num">04</span><span class="label">Sea</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment=".8"><span class="num">05</span><span class="label">Air</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
+          <button class="chapter" data-moment="1"><span class="num">06</span><span class="label">World</span><span class="mini-arrow" aria-hidden="true">↗</span></button>
         </nav>
       </footer>
     </section>
@@ -104,10 +110,14 @@
       {name:'Loading',title:'Handled with purpose',headline:'Every box.<br> A new<br> <span class="soft">possibility.</span>',body:'From one carefully stacked pallet to a container ready to go. The next chapter starts with the smallest details.',action:'Keep it moving',caption:'Packed for the possibilities ahead',note:'One pallet. One connected journey.'},
       {name:'Road',title:'The road ahead',headline:'On the road.<br> Towards<br> <span class="soft">what’s next.</span>',body:'The warehouse falls behind. The horizon opens up. From Dubai’s roads to the gateway to your market.',action:'Meet the open sea',caption:'Every mile brings us closer',note:'From our door to your next opportunity.'},
       {name:'Sea',title:'Beyond the shoreline',headline:'Across seas.<br> Closer to<br> <span class="soft">you.</span>',body:'Out on the Gulf, the journey finds a new rhythm. Container by container, connecting Dubai with the world.',action:'Take to the skies',caption:'New horizons, same destination',note:'By sea. Beyond borders.'},
-      {name:'Air',title:'A world within reach',headline:'New heights.<br> New<br> <span class="soft">connections.</span>',body:'By road, by sea or through the sky. Wherever your business takes you, let’s start the next journey together.',action:'Start an enquiry',caption:'Your next chapter is waiting',note:'From Dubai. To your world.'}
+      {name:'Air',title:'A world within reach',headline:'New heights.<br> New<br> <span class="soft">connections.</span>',body:'By road, by sea or through the sky. Wherever your business takes you, let’s start the next journey together.',action:'See your market',caption:'Your next chapter is waiting',note:'From Dubai. To your world.'},
+      {name:'World',title:'From Dubai, with possibility',headline:'Your market<br> is on<br> <span class="soft">this map.</span>',body:"Tell us the country and the quantity, and we'll send a quote.",action:'Request a quote',caption:'One origin. Your next opportunity.',note:'Illustrative routes · Your destination comes next.'}
     ];
     let currentStage=-1, progress=window.__pendingProgress, target=progress, manual=false, ready=false, failed=false;
     let renderer, scene, camera, world, objects={}, materials={}, baseline=[], curve, wheelBatches=[], seaStreaks;
+    const routeData=[['Cairo',30.04,31.24,-42,-22],['Dakar',14.72,-17.47,-64,-7],['Accra',5.60,-.19,-55,23],['Lagos',6.52,3.38,18,-16],['Kinshasa',-4.44,15.27,-70,18],['Nairobi',-1.29,36.82,20,-30],['Mombasa',-4.04,39.67,24,-6],['Dar es Salaam',-6.79,39.21,24,19],['Johannesburg',-26.20,28.05,-28,25]];
+    const seaOpacity={value:1},pulseOpacity={value:1};
+    let globeRoutes=[],globeLabels=[],globeLandCount=0;
     let viewport={width:innerWidth,height:innerHeight}, lastTime=0, fpsTime=0, fpsFrames=0, stats;
     const debugMode=new URLSearchParams(location.search).has('debug');
     const reviewMode=new URLSearchParams(location.search).has('review');
@@ -117,9 +127,10 @@
     cutouts.forEach(el=>el.querySelector('img').addEventListener('error',()=>{el.hidden=true}));
     const colors={Chalk:'#F1F2F0',Asphalt:'#2B2E33',Gulf:'#0A5C99',Signal:'#FF5B1F',Haze:'#D5DDE2',Graphite:'#4A5058'};
     function colorMix(a,b,t){const h=s=>s.match(/\w\w/g).map(n=>parseInt(n,16));const A=h(a.slice(1)),B=h(b.slice(1));return 'rgb('+A.map((v,i)=>Math.round(mix(v,B[i],t))).join(',')+')'}
+    function geographicPoint(lat,lon,r=1){const a=lat*Math.PI/180,b=lon*Math.PI/180;return new THREE.Vector3(Math.cos(a)*Math.sin(b),Math.sin(a),Math.cos(a)*Math.cos(b)).multiplyScalar(r)}
     function updateCopy(p){
-      const stage=Math.min(4,Math.floor(p*4+.5));
-      const seaTone=range(p,.52,.71), theme=colorMix(colors.Chalk,colors.Gulf,seaTone);
+      const stage=Math.min(5,Math.floor(p*5+.5));
+      const seaTone=range(p/.8,.52,.71), theme=colorMix(colors.Chalk,colors.Gulf,seaTone);
       document.documentElement.style.setProperty('--paper',theme);
       document.documentElement.style.setProperty('--ink',seaTone>.76?colors.Chalk:colors.Asphalt);
       document.documentElement.style.setProperty('--line',seaTone>.76?'rgba(241,242,240,.25)':'rgba(43,46,51,.2)');
@@ -129,24 +140,24 @@
       $('progress-slider').value=p; $('progress-value').value=p.toFixed(3);
       if(stage!==currentStage){
         currentStage=stage;const s=stages[stage];
-        $('chapter-number').textContent=String(stage+1).padStart(2,'0')+' / 05';
+        $('chapter-number').textContent=String(stage+1).padStart(2,'0')+' / 06';
         $('chapter-title').textContent=s.title;$('headline').innerHTML=s.headline;$('headline').setAttribute('aria-label',s.headline.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim());
-        $('description').textContent=s.body;$('copy-action').innerHTML=s.action+' <span class="arrow" aria-hidden="true">'+(stage===4?'↗':'↓')+'</span>';
+        $('description').textContent=s.body;$('copy-action').innerHTML=s.action+' <span class="arrow" aria-hidden="true">'+(stage===5?'↗':'↓')+'</span>';
         $('scene-caption').textContent=s.caption;$('scene-code').textContent='DXB / 0'+(stage+1);
         $('scene-index').textContent='0'+(stage+1);$('subject-note').textContent=s.note;
-        $('scroll-hint').textContent=stage===4?'Your next journey starts here':'Scroll to follow the cargo';
+        $('scroll-hint').textContent=stage===5?'Your next journey starts here':'Scroll to follow the cargo';
         stageButtons.forEach((el,i)=>{if(i===stage)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current')});
       }
       cutouts.forEach(el=>{
-        const key=Number(el.dataset.key),d=p-key;
-        const opacity=key===0?1-range(p,.035,.19):range(p,key-.11,key-.025)*(1-range(p,key+.025,key+.19));
+        const key=Number(el.dataset.key),legacyP=p/.8,d=legacyP-key;
+        const opacity=key===0?1-range(legacyP,.035,.19):range(legacyP,key-.11,key-.025)*(1-range(legacyP,key+.025,key+.19));
         el.style.opacity=opacity.toFixed(3);el.style.visibility=opacity<.001?'hidden':'visible';
         el.style.transform='translate3d('+(-d*40)+'px,'+(reduced?0:-d*150)+'px,0) rotate('+(-7+d*12)+'deg)';
         el.style.filter='blur('+(reduced?0:(1-opacity)*7)+'px)';
       });
       return seaTone;
     }
-    function fallback(error){failed=true;ready=false;document.body.classList.add('webgl-failed');document.body.classList.remove('scene-ready');if(error)console.warn('The 3D view is unavailable. Showing the local poster.',error.message||error)}
+    function fallback(error){failed=true;ready=false;$('globe-labels').hidden=true;document.body.classList.add('webgl-failed');document.body.classList.remove('scene-ready');if(error)console.warn('The 3D view is unavailable. Showing the local poster.',error.message||error)}
     function build(){
       if(!window.THREE){fallback('Local Three.js could not load');return}
       const T=THREE;
@@ -163,13 +174,24 @@
       // Keep the authored Signal hue in display sRGB; light changes its value, not its hue.
       materials.Signal.toneMapped=false;
       materials.Signal.onBeforeCompile=shader=>{
-        shader.vertexShader='attribute float aScanner; varying float vScanner;\n'+shader.vertexShader;
-        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvScanner=aScanner;');
-        shader.fragmentShader='varying float vScanner;\n'+shader.fragmentShader;
+        shader.uniforms.uPulseOpacity=pulseOpacity;
+        shader.vertexShader='attribute float aScanner; attribute float aPulse; varying float vScanner; varying float vPulse;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvScanner=aScanner;vPulse=aPulse;');
+        shader.fragmentShader='varying float vScanner; varying float vPulse; uniform float uPulseOpacity;\n'+shader.fragmentShader;
         shader.fragmentShader=shader.fragmentShader.replace('#include <colorspace_fragment>','#include <colorspace_fragment>\nvec3 signalSRGB=vec3(1.0,91.0/255.0,31.0/255.0); float signalValue=clamp(dot(gl_FragColor.rgb,vec3(.2126,.7152,.0722))/dot(signalSRGB,vec3(.2126,.7152,.0722)),.64,1.0); gl_FragColor.rgb=signalSRGB*signalValue;');
         shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=diffuseColor.rgb*vScanner*2.0;');
+        shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(vPulse>.5)gl_FragColor.a*=uPulseOpacity;');
       };
-      materials.Signal.customProgramCacheKey=()=> 'signal-srgb-scanner-v2';
+      materials.Signal.transparent=true;materials.Signal.customProgramCacheKey=()=> 'signal-srgb-scanner-pulse-v3';
+      materials.Gulf.transparent=true;
+      materials.Gulf.onBeforeCompile=shader=>{
+        shader.uniforms.uSeaOpacity=seaOpacity;
+        shader.vertexShader='attribute float aSea; varying float vSea;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSea=aSea;');
+        shader.fragmentShader='varying float vSea; uniform float uSeaOpacity;\n'+shader.fragmentShader;
+        shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\ngl_FragColor.a*=mix(1.0,uSeaOpacity,vSea);');
+      };
+      materials.Gulf.customProgramCacheKey=()=> 'gulf-sea-fade-v1';
       const boxGeometry=new T.BoxGeometry(1,1,1), cylinderGeometry=new T.CylinderGeometry(1,1,1,16);
       const bevelShape=new T.Shape();bevelShape.moveTo(-.48,-.48);bevelShape.lineTo(.48,-.48);bevelShape.lineTo(.48,.48);bevelShape.lineTo(-.48,.48);bevelShape.closePath();
       const roundedBoxGeometry=new T.ExtrudeGeometry(bevelShape,{depth:.96,bevelEnabled:true,bevelSize:.02,bevelThickness:.02,bevelSegments:1,steps:1});roundedBoxGeometry.translate(0,0,-.48);
@@ -277,7 +299,8 @@
       const dashes=group('RoadDashes',road),dashTransforms=[];
       for(let i=0;i<52;i++){const t=i/51,c=curve.getPoint(t),v=curve.getTangent(t);dashTransforms.push({p:[c.x,.012,c.z],s:[.85,.018,.10],r:[0,-Math.atan2(v.z,v.x),0]})}batch(dashes,boxGeometry,'Haze',dashTransforms);
       batch(road,boxGeometry,'Haze',Array.from({length:180},(_,i)=>{const t=(i%90)/89,c=curve.getPoint(t),v=curve.getTangent(t),sign=i<90?1:-1;return {p:[c.x-v.z*4.1*sign,.012,c.z+v.x*4.1*sign],s:[1.05,.015,.05],r:[0,-Math.atan2(v.z,v.x),0]}}));
-      const sea=group('Sea');const water=box(sea,'Gulf',[90,-.59,0],[700,.2,700]);water.receiveShadow=false;water.castShadow=false;
+      const sea=group('Sea'),waterGeometry=boxGeometry.clone();waterGeometry.setAttribute('aSea',new T.Float32BufferAttribute(new Float32Array(waterGeometry.attributes.position.count).fill(1),1));
+      const water=mesh(sea,waterGeometry,'Gulf',[90,-.59,0],[700,.2,700]);water.receiveShadow=false;water.castShadow=false;water.renderOrder=-2;
       const streakTransforms=Array.from({length:65},(_,i)=>({p:[70+(i*17%120),-.475,-55+(i*23%110)],s:[.3+(i%5)*.2,.006,.025],r:[0,-.3,0]}));
       seaStreaks=batch(sea,boxGeometry,'Haze',streakTransforms);seaStreaks.castShadow=false;seaStreaks.receiveShadow=false;seaStreaks.userData.base=streakTransforms;
       const ship=group('Ship');
@@ -333,6 +356,42 @@
         shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(vSoftShadow>0.0){gl_FragColor.a*=vSoftShadow*(1.0-smoothstep(0.05,1.0,length(vShadowPosition.xz)));}');
       };
       materials.Asphalt.customProgramCacheKey=()=> 'shared-asphalt-soft-shadow-v2';
+      // Natural Earth mask is a plain local script, decoded as bits, never a texture.
+      const mask=window.NATURAL_EARTH_LAND;if(!mask)throw new Error('The local land mask is missing');
+      const landBits=Uint8Array.from(atob(mask.bits),c=>c.charCodeAt(0));
+      function isLand(lat,lon){const x=Math.floor((((lon+180)%360+360)%360)/360*mask.width),y=clamp(Math.floor((90-lat)/180*mask.height),0,mask.height-1),bit=y*mask.width+x;return !!((landBits[bit>>3]>>(bit&7))&1)}
+      const globe=group('Globe'),body=mesh(globe,new T.SphereGeometry(10,64,40),'Asphalt');body.name='GlobeBody';body.castShadow=false;body.receiveShadow=false;
+      const landPoints=[],goldenAngle=Math.PI*(3-Math.sqrt(5));
+      for(let i=0;i<14000;i++){const lat=Math.asin(1-2*(i+.5)/14000)*180/Math.PI,lon=(i*goldenAngle%(2*Math.PI))*180/Math.PI-180;if(isLand(lat,lon))landPoints.push(geographicPoint(lat,lon,10.035))}
+      globeLandCount=landPoints.length;
+      const land=new T.InstancedMesh(new T.CircleGeometry(1,6),materials.Haze,landPoints.length);land.name='GlobeLand';land.castShadow=false;land.receiveShadow=false;land.renderOrder=2;
+      landPoints.forEach((v,i)=>{dummy.position.copy(v);dummy.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),v.clone().normalize());dummy.scale.setScalar(.057);dummy.updateMatrix();land.setMatrixAt(i,dummy.matrix)});land.computeBoundingSphere();globe.add(land);
+      const routeGroup=group('GlobeRoutes',globe),hubVector=geographicPoint(25.20,55.27),hub=group('DubaiHub',globe);
+      const markerGeometry=new T.SphereGeometry(1,10,6),ringGeometry=new T.TorusGeometry(1,.045,4,32);
+      // The same Signal ink as the scanner keeps route graphics legible without bloom.
+      markerGeometry.setAttribute('aScanner',new T.Float32BufferAttribute(new Float32Array(markerGeometry.attributes.position.count).fill(.6),1));
+      ringGeometry.setAttribute('aPulse',new T.Float32BufferAttribute(new Float32Array(ringGeometry.attributes.position.count).fill(1),1));
+      hub.position.copy(hubVector.clone().multiplyScalar(10.18));mesh(hub,markerGeometry,'Signal',[0,0,0],[.18,.18,.18]);
+      function makeLabel(name,unit,start,dx,dy,isHub=false){
+        const label=document.createElement('span');label.className='destination-label'+(isHub?' hub':'');label.textContent=name;label.hidden=true;$('globe-labels').append(label);
+        const leader=document.createElementNS('http://www.w3.org/2000/svg','line');$('globe-leaders').append(leader);
+        const item={name,unit,start,dx,dy,isHub,label,leader};globeLabels.push(item);return item;
+      }
+      makeLabel('Dubai',hubVector,.88,14,-24,true);
+      routeData.forEach(([name,lat,lon,dx,dy],i)=>{
+        const unit=geographicPoint(lat,lon),omega=Math.acos(clamp(hubVector.dot(unit),-1,1)),sinOmega=Math.sin(omega),arc=new T.Curve();
+        arc.getPoint=(t,target=new T.Vector3())=>target.copy(hubVector).multiplyScalar(Math.sin((1-t)*omega)/sinOmega).addScaledVector(unit,Math.sin(t*omega)/sinOmega).normalize().multiplyScalar(10.16+Math.sin(Math.PI*t)*(1.05+omega*.8));
+        const geometry=new T.TubeGeometry(arc,80,.027,4,false),trail=mesh(routeGroup,geometry,'Signal');trail.name='Route_'+name.replace(/ /g,'_');trail.castShadow=false;trail.receiveShadow=false;trail.renderOrder=3;
+        geometry.setAttribute('aScanner',new T.Float32BufferAttribute(new Float32Array(geometry.attributes.position.count).fill(.6),1));
+        const flyer=plane.clone(true);flyer.name='RoutePlane_'+name.replace(/ /g,'_');flyer.scale.setScalar(.060);flyer.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;o.renderOrder=4}});routeGroup.add(flyer);
+        const marker=group('Destination_'+name.replace(/ /g,'_'),globe);marker.position.copy(unit.clone().multiplyScalar(10.16));
+        const idle=mesh(marker,markerGeometry,'Haze',[0,0,0],[.065,.065,.065]),lit=mesh(marker,markerGeometry,'Signal',[0,0,0],[.135,.135,.135]);idle.castShadow=lit.castShadow=false;idle.receiveShadow=lit.receiveShadow=false;lit.renderOrder=4;
+        const pulse=mesh(marker,ringGeometry,'Signal');pulse.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),unit);pulse.castShadow=false;pulse.receiveShadow=false;pulse.renderOrder=5;
+        pulse.onBeforeRender=()=>{pulseOpacity.value=pulse.userData.opacity;materials.Signal.depthWrite=false};pulse.onAfterRender=()=>{pulseOpacity.value=1;materials.Signal.depthWrite=true};
+        const start=.88+i*.0075,arrival=start+.048;
+        globeRoutes.push({name,arc,trail,flyer,idle,lit,pulse,start,arrival,unit,fullCount:geometry.index.count});
+        makeLabel(name,unit,arrival,dx,dy);
+      });
       // Fine, deterministic surface finish in the shader. No texture images or extra materials.
       for(const [name,material] of Object.entries(materials)){
         const compile=material.onBeforeCompile,cache=material.customProgramCacheKey();
@@ -352,12 +411,14 @@
       ready=true;document.body.classList.add('scene-ready');
       const materialSet=new Set();let triangles=0,instances=0;
       world.traverse(o=>{if(o.isMesh){materialSet.add(o.material);triangles+=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);if(o.isInstancedMesh)instances+=o.count}});
-      stats={materials:materialSet.size,triangles:Math.round(triangles),instances};
-      window.journeyScene={scene,world,camera,renderer,objects,materials,stats,get progress(){return progress},get ready(){return ready},snapshot(){const result=[];world.updateMatrixWorld(true);world.traverse(o=>{if(o===seaStreaks)return;result.push({id:o.uuid,parent:o.parent?.uuid,p:o.position.toArray(),q:o.quaternion.toArray(),s:o.scale.toArray(),v:o.visible})});result.sort((a,b)=>a.id.localeCompare(b.id));return JSON.stringify({objects:result,camera:{p:camera.position.toArray(),q:camera.quaternion.toArray(),projection:camera.projectionMatrix.toArray()}})}};
+      stats={materials:materialSet.size,triangles:Math.round(triangles),instances,landDots:globeLandCount,routes:globeRoutes.length};
+      window.journeyScene={scene,world,camera,renderer,objects,materials,stats,globeRoutes,globeLabels,isLand,get stage(){return currentStage},get progress(){return progress},get ready(){return ready},snapshot(){const result=[];world.updateMatrixWorld(true);world.traverse(o=>{if(o===seaStreaks)return;result.push({id:o.uuid,parent:o.parent?.uuid,p:o.position.toArray(),q:o.quaternion.toArray(),s:o.scale.toArray(),v:o.visible})});result.sort((a,b)=>a.id.localeCompare(b.id));return JSON.stringify({objects:result,seaOpacity:seaOpacity.value,routes:globeRoutes.map(r=>[r.trail.geometry.drawRange.count,r.pulse.userData.opacity]),labels:globeLabels.map(l=>[l.label.hidden,l.label.style.cssText,l.leader.outerHTML]),camera:{p:camera.position.toArray(),q:camera.quaternion.toArray(),projection:camera.projectionMatrix.toArray()}})}};
       resize();
     }
     function applyProgress(p){
       progress=p;const seaTone=updateCopy(p);if(!ready)return;
+      // All legacy timings are evaluated on this scaled clock, including doors and camera.
+      const totalProgress=p,transition=range(p,.8,.88);p=Math.min(p/.8,1);
       const T=THREE,o=objects;
       for(const b of baseline){b.o.position.copy(b.position);b.o.quaternion.copy(b.quaternion);b.o.scale.copy(b.scale);b.o.visible=b.visible}
       const roadT=mix(1/6,.88,range(p,.30,.64)), truckPosition=curve.getPoint(roadT),tangent=curve.getTangent(roadT);
@@ -383,10 +444,13 @@
       const roadFollow=range(p,.28,.43);cameraTarget.lerp(new T.Vector3(o.Truck.position.x+1,1.5,o.Truck.position.z),roadFollow);
       const seaFollow=range(p,.555,.72);cameraTarget.lerp(new T.Vector3(o.Ship.position.x,0,o.Ship.position.z),seaFollow);
       const airFollow=range(p,.815,.97);cameraTarget.lerp(o.Plane.position,airFollow);
+      const globeTarget=new T.Vector3(118,58,-9);cameraTarget.lerp(globeTarget,transition);
       const opening=new T.Vector3(-7,3.7,13), loading=new T.Vector3(-24,21,29),chase=new T.Vector3(4,22,36),overSea=new T.Vector3(-7,53,20),airView=new T.Vector3(4,31,34);
       let offset=opening.clone().lerp(loading,range(p,.05,.25));offset.lerp(chase,range(p,.29,.49));offset.lerp(overSea,range(p,.55,.74));offset.lerp(airView,range(p,.82,1));
+      offset.lerp(new T.Vector3(0,12,42),transition);
       const portrait=viewport.width<900;
       let height=mix(10.5,9.8,range(p,0,.04));height=mix(height,29,range(p,.05,.25));height=mix(height,30,range(p,.29,.50));height=mix(height,41,range(p,.56,.75));height=mix(height,32,range(p,.84,1));
+      height=mix(height,29,transition);
       if(portrait)height*=Math.max(1.45,.95/(viewport.width/viewport.height));
       const aspect=viewport.width/viewport.height;
       camera.aspect=aspect;camera.fov=T.MathUtils.radToDeg(2*Math.atan(height/(2*offset.length())));
@@ -398,10 +462,56 @@
       scene.background.set(colorMix(colors.Chalk,colors.Gulf,seaTone));
       o.Sun.position.copy(lightingTarget).add(new T.Vector3(-22,32,20));o.Sun.target.position.copy(lightingTarget);o.Fill.children[0].intensity=mix(1.45,1.5,seaTone);o.Fill.children[0].groundColor.set(colorMix(colors.Haze,'#8998a5',seaTone));
       o.Warehouse.visible=p<.70;o.Forklift.visible=p<.45;o.Truck.visible=p<.72;o.Road.visible=p<.76;
-      o.Sea.visible=p>.50;o.Ship.visible=p>.53;o.Wake.visible=p>.53;o.Plane.visible=p>.78;o.PlaneShadow.visible=p>.78;
+      o.Sea.visible=p>.50&&totalProgress<.88;o.Ship.visible=p>.53&&totalProgress<.82;o.Wake.visible=o.Ship.visible;o.Plane.visible=p>.78&&totalProgress<.85;o.PlaneShadow.visible=p>.78&&totalProgress<.84;
+      seaOpacity.value=1-transition;seaStreaks.visible=totalProgress<.805;
+      // The aircraft continues out of frame as the camera rises; it never resets into the globe.
+      o.Plane.position.add(new T.Vector3(25,7,-32).multiplyScalar(range(totalProgress,.8,.85)));
+      o.PlaneShadow.position.set(o.Plane.position.x+4,-.465,o.Plane.position.z-2);
+      o.Globe.visible=totalProgress>.8;o.Globe.position.set(118,mix(-14,58,transition),-9);o.Globe.scale.setScalar(mix(.65,1,transition));
+      o.Globe.rotation.set(-.13,mix(-65,-20,range(totalProgress,.8,1))*Math.PI/180,-.035);
+      o.DubaiHub.visible=totalProgress>=.88;
+      const basis=new T.Matrix4();
+      for(const r of globeRoutes){
+        const travel=range(totalProgress,r.start,r.arrival),arrived=totalProgress>=r.arrival;
+        r.trail.visible=totalProgress>=r.start;r.trail.geometry.setDrawRange(0,Math.floor(travel*80+1e-8)*24);
+        r.flyer.position.copy(r.arc.getPoint(travel));
+        const forward=r.arc.getTangent(travel).normalize(),normal=r.flyer.position.clone().normalize(),side=new T.Vector3().crossVectors(forward,normal).normalize(),up=new T.Vector3().crossVectors(side,forward).normalize();
+        basis.makeBasis(forward,up,side);r.flyer.quaternion.setFromRotationMatrix(basis);r.flyer.scale.setScalar(.060);r.flyer.visible=totalProgress>=r.start&&!arrived;
+        r.idle.visible=totalProgress>=.88&&!arrived;r.lit.visible=arrived;
+        const pulse=clamp((totalProgress-r.arrival)/.012);r.pulse.scale.setScalar(mix(.16,.64,pulse));r.pulse.userData.opacity=1-ease(pulse);r.pulse.visible=arrived&&pulse<1-1e-8;
+      }
       // Native frustum culling handles individual meshes; whole groups are culled only off screen.
       world.updateMatrixWorld(true);
+      positionGlobeLabels(totalProgress);
       if(debugMode){$('debug').dataset.materials=stats.materials;$('debug').dataset.triangles=stats.triangles}
+    }
+    function positionGlobeLabels(p){
+      const overlay=$('globe-labels');overlay.hidden=p<.88||!ready||failed;
+      const portrait=viewport.width<900,font=portrait?8:10,placed=[],globe=objects.Globe;
+      const bounds={left:portrait?12:viewport.width*.465,right:viewport.width-16,top:viewport.height*(portrait?.155:.20),bottom:viewport.height*(portrait?.495:.76)};
+      const rotation=globe.getWorldQuaternion(new THREE.Quaternion());
+      for(const item of globeLabels){
+        item.label.hidden=true;item.label.style.cssText='';item.leader.style.opacity='0';
+        for(const key of ['x1','x2','y1','y2'])item.leader.setAttribute(key,'0');
+        if(overlay.hidden||p<item.start)continue;
+        const point=globe.localToWorld(item.unit.clone().multiplyScalar(10.24)),normal=item.unit.clone().applyQuaternion(rotation),eye=camera.position.clone().sub(point).normalize();
+        if(normal.dot(eye)<=.10)continue;
+        const projected=point.clone().project(camera);if(projected.z<-1||projected.z>1)continue;
+        const sx=(projected.x*.5+.5)*viewport.width,sy=(-projected.y*.5+.5)*viewport.height;
+        const width=(item.name.length+(item.isHub?2:0))*font*.57+8,height=font+7;
+        let x=clamp(sx+item.dx*(portrait?.72:1),bounds.left,bounds.right-width),y=clamp(sy+item.dy*(portrait?.8:1),bounds.top,bounds.bottom-height);
+        const baseY=y,baseX=x;
+        for(let attempt=0;attempt<32;attempt++){
+          const collides=placed.some(r=>x<r.x+r.w+5&&x+width+5>r.x&&y<r.y+r.h+3&&y+height+3>r.y);
+          if(!collides)break;
+          const row=Math.ceil((attempt+1)/2),sign=attempt%2?1:-1;
+          y=clamp(baseY+sign*row*(height+5),bounds.top,bounds.bottom-height);
+          if(attempt>15)x=clamp(baseX+(item.dx<0?-1:1)*width,bounds.left,bounds.right-width);
+        }
+        placed.push({x,y,w:width,h:height});const alpha=range(p,item.start,item.start+.005);
+        item.label.hidden=false;item.label.style.cssText='left:'+x.toFixed(2)+'px;top:'+y.toFixed(2)+'px;opacity:'+alpha.toFixed(3);
+        item.leader.setAttribute('x1',sx.toFixed(2));item.leader.setAttribute('y1',sy.toFixed(2));item.leader.setAttribute('x2',clamp(sx,x,x+width).toFixed(2));item.leader.setAttribute('y2',(y+height/2).toFixed(2));item.leader.style.opacity=(alpha*.5).toFixed(3);
+      }
     }
     window.__applyProgress=applyProgress;
     function resize(){viewport={width:innerWidth,height:innerHeight};if(renderer){renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(viewport.width,viewport.height,false)}setProgress(progress);readScroll()}
@@ -409,7 +519,7 @@
     function readScroll(){if(!manual)target=clamp(-track.getBoundingClientRect().top/Math.max(1,track.offsetHeight-viewport.height))}
     function goTo(p){manual=false;target=clamp(p);window.scrollTo({top:target*(track.offsetHeight-viewport.height),behavior:'instant'});readScroll()}
     document.querySelectorAll('[data-moment]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();goTo(Number(el.dataset.moment))}));
-    $('copy-action').addEventListener('click',()=>currentStage===4?openEnquiry():goTo((currentStage+1)/4));
+    $('copy-action').addEventListener('click',()=>currentStage===5?openEnquiry():goTo((currentStage+1)/5));
     $('progress-slider').addEventListener('input',e=>{manual=true;target=Number(e.target.value);setProgress(target)});
     $('resume-scroll').addEventListener('click',()=>{manual=false;readScroll()});
     addEventListener('scroll',()=>{if(manual)return;readScroll()},{passive:true});
@@ -441,7 +551,7 @@
       const report={ready,checks:[]},check=(name,pass,detail='')=>report.checks.push({name,pass:!!pass,detail});
       if(ready){
         check('Exactly six shared materials',stats.materials===6,stats.materials);
-        const required=['World','Warehouse','Pallet','ScanBeam','Forklift','Forks','Truck','Container','DoorLeft','DoorRight','Road','RoadDashes','Sea','Ship','ShipStacks','Wake','Plane','PlaneShadow','Sun','Fill',...Array.from({length:24},(_,i)=>'Carton_'+String(i+1).padStart(2,'0'))];
+        const required=['World','Warehouse','Pallet','ScanBeam','Forklift','Forks','Truck','Container','DoorLeft','DoorRight','Road','RoadDashes','Sea','Ship','ShipStacks','Wake','Plane','PlaneShadow','Sun','Fill','Globe','GlobeRoutes','DubaiHub',...routeData.map(r=>'Destination_'+r[0].replace(/ /g,'_')),...Array.from({length:24},(_,i)=>'Carton_'+String(i+1).padStart(2,'0'))];
         const names={};world.traverse(o=>{if(o.name)names[o.name]=(names[o.name]||0)+1});check('Unique required names',required.every(n=>names[n]===1));
         check('Required names belong to groups',required.every(n=>world.getObjectByName(n).isGroup));
         let lights=0;world.traverse(o=>{if(o.isLight)lights++});check('Only two lights',lights===2,lights);
@@ -460,17 +570,36 @@
         setProgress(0);check('Rear doors fully open at zero',Math.abs(objects.DoorLeft.rotation.y)===Math.PI&&Math.abs(objects.DoorRight.rotation.y)===Math.PI);
         check('Scanner visible at zero',objects.ScanBeam.visible&&objects.ScanBeam.children[0].geometry.hasAttribute('aScanner'));
         for(const p of [.31,.42,.5,.59,.64]){
-          setProgress(p);const t=mix(1/6,.88,range(p,.30,.64)),position=curve.getPoint(t),direction=curve.getTangent(t).normalize();
+          setProgress(p*.8);const t=mix(1/6,.88,range(p,.30,.64)),position=curve.getPoint(t),direction=curve.getTangent(t).normalize();
           const forward=new THREE.Vector3(1,0,0).applyQuaternion(objects.Truck.quaternion);
           check('Truck follows road tangent at '+p,objects.Truck.position.distanceTo(position)<1e-8&&forward.dot(direction)>.999999);
         }
-        for(const p of [0,.1,.23,.25,.27,.3,.5,.6,.75,1]){setProgress(p);const first=window.journeyScene.snapshot();setProgress(1-p);setProgress(p);check('Deterministic at '+p,first===window.journeyScene.snapshot())}
-        setProgress(.27);check('Pallet parented to Container',objects.Pallet.parent===objects.Container);
-        const before=objects.Pallet.getWorldPosition(new THREE.Vector3());setProgress(.269999);const after=objects.Pallet.getWorldPosition(new THREE.Vector3());check('Continuous pallet reparent',before.distanceTo(after)<.001,before.distanceTo(after));
+        for(const p of [0,.08,.184,.2,.216,.24,.4,.6,.8,.81,.84,.88,.90,.925,.95,.985,1]){setProgress(p);const first=window.journeyScene.snapshot();setProgress(1-p);setProgress(p);check('Deterministic at '+p,first===window.journeyScene.snapshot())}
+        setProgress(.27*.8);check('Pallet parented to Container at scaled .216',objects.Pallet.parent===objects.Container);
+        const before=objects.Pallet.getWorldPosition(new THREE.Vector3());setProgress(.269999*.8);const after=objects.Pallet.getWorldPosition(new THREE.Vector3());check('Continuous pallet reparent',before.distanceTo(after)<.001,before.distanceTo(after));
         check('Reverse restores pallet to World',objects.Pallet.parent===world);
-        setProgress(.27);check('Doors fully closed at .27',objects.DoorLeft.rotation.y===0&&objects.DoorRight.rotation.y===0);
-        setProgress(.23);check('Doors open at .23',Math.abs(objects.DoorLeft.rotation.y)>2.5);
-        setProgress(.5);check('Truck travels after .30',objects.Truck.position.length()>1);
+        setProgress(.27*.8);check('Doors fully closed at scaled .216',objects.DoorLeft.rotation.y===0&&objects.DoorRight.rotation.y===0);
+        setProgress(.23*.8);check('Doors open at scaled .184',Math.abs(objects.DoorLeft.rotation.y)>2.5);
+        setProgress(.5*.8);check('Truck travels after scaled .24',objects.Truck.position.length()>1);
+        check('Six copy blocks and rail stops',stages.length===6&&stageButtons.length===6);
+        for(const [i,p] of [0,.2,.4,.6,.8,1].entries()){setProgress(p);check('Nearest copy stage at '+p,currentStage===i)}
+        check('Natural Earth land dots in one InstancedMesh',world.getObjectByName('GlobeLand').isInstancedMesh&&globeLandCount===4024,globeLandCount);
+        check('Land mask has valid geography',window.journeyScene.isLand(25.20,55.27)&&window.journeyScene.isLand(-26.20,28.05)&&!window.journeyScene.isLand(0,-30));
+        check('Nine destination routes',globeRoutes.length===9);
+        check('Route planes share original geometry/materials',globeRoutes.every(r=>r.flyer.children.every((m,i)=>m.geometry===objects.Plane.children[i].geometry&&m.material===objects.Plane.children[i].material)));
+        check('Route arcs remain above sphere',globeRoutes.every(r=>Array.from({length:21},(_,i)=>r.arc.getPoint(i/20).length()).every(radius=>radius>10.15)));
+        for(const r of globeRoutes){setProgress((r.start+r.arrival)/2);const f=new THREE.Vector3(1,0,0).applyQuaternion(r.flyer.quaternion);check(r.name+' plane follows tangent',r.flyer.visible&&f.dot(r.arc.getTangent(.5))>.99999)}
+        setProgress(.8);const cameraBefore=camera.position.clone();check('Air frame preserved at .8',objects.Plane.visible&&!objects.Globe.visible&&seaOpacity.value===1);
+        setProgress(.800001);check('Continuous globe transition entry',cameraBefore.distanceTo(camera.position)<.001);
+        setProgress(.84);check('Sea fades during transition',seaOpacity.value>0&&seaOpacity.value<1&&objects.Globe.visible);
+        setProgress(.88);check('Transition ends before routes develop',!objects.Sea.visible&&seaOpacity.value===0&&globeRoutes.every(r=>r.trail.geometry.drawRange.count===0));
+        setProgress(.925);check('Routes draw behind flying planes',globeRoutes.some(r=>r.flyer.visible&&r.trail.geometry.drawRange.count>0&&r.trail.geometry.drawRange.count<r.fullCount));
+        setProgress(.934);check('Arrival pulse occurs once',globeRoutes[0].pulse.visible&&globeRoutes[0].lit.visible);
+        setProgress(1);check('Final arcs complete, markers lit, planes and pulses hidden',globeRoutes.every(r=>r.trail.geometry.drawRange.count===r.fullCount&&r.lit.visible&&!r.flyer.visible&&!r.pulse.visible));
+        check('Final quote copy and CTA',currentStage===5&&$('copy-action').textContent.includes('Request a quote')&&$('description').textContent==="Tell us the country and the quantity, and we'll send a quote.");
+        check('All final destination labels face camera',globeLabels.every(l=>!l.label.hidden));
+        objects.Globe.rotation.y+=Math.PI;world.updateMatrixWorld(true);positionGlobeLabels(1);check('Far-side labels are hidden',globeLabels.filter(l=>l.label.hidden).length>=8);
+        setProgress(1);
         setProgress(0);manual=true;target=0;
       }
       report.stats=stats;
